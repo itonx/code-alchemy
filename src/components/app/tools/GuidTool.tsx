@@ -1,6 +1,7 @@
 import { Icon } from "@iconify/react";
 import { useState } from "react";
 import CopyButton from "../CopyButton";
+import OptionCheckbox from "../OptionCheckbox";
 import { ui } from "../uiClasses";
 import { createFormattedGuids } from "../utils/guid";
 
@@ -36,7 +37,7 @@ export default function GuidTool({ onToast }: GuidToolProps) {
         </p>
       </header>
 
-      <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-4 items-end">
         <div className={ui.optionCard}>
           <label className={ui.fieldLabel} htmlFor="guidCountInput">
             Count
@@ -52,56 +53,28 @@ export default function GuidTool({ onToast }: GuidToolProps) {
           />
         </div>
 
-        <div className={ui.optionCard}>
-          <label className={ui.fieldLabel} htmlFor="guidCaseMode">
-            Case
-          </label>
-          <select
-            id="guidCaseMode"
-            className={ui.compactInput}
-            value={caseMode}
-            onChange={(event) =>
-              setCaseMode(event.target.value as "lowercase" | "uppercase")
-            }
-          >
-            <option value="lowercase">lower</option>
-            <option value="uppercase">upper</option>
-          </select>
-        </div>
+        <OptionCheckbox
+          id="guidCaseMode"
+          label="Uppercase"
+          checked={caseMode === "uppercase"}
+          onChange={(checked) =>
+            setCaseMode(checked ? "uppercase" : "lowercase")
+          }
+        />
 
-        <div className={ui.optionCard}>
-          <label className={ui.fieldLabel} htmlFor="guidHyphenMode">
-            Hyphens
-          </label>
-          <select
-            id="guidHyphenMode"
-            className={ui.compactInput}
-            value={includeHyphens ? "with" : "without"}
-            onChange={(event) =>
-              setIncludeHyphens(event.target.value === "with")
-            }
-          >
-            <option value="with">With hyphens</option>
-            <option value="without">No hyphens</option>
-          </select>
-        </div>
+        <OptionCheckbox
+          id="guidHyphenMode"
+          label="Include hyphens"
+          checked={includeHyphens}
+          onChange={setIncludeHyphens}
+        />
 
-        <div className={ui.optionCard}>
-          <label className={ui.fieldLabel} htmlFor="guidBraceMode">
-            Braces
-          </label>
-          <select
-            id="guidBraceMode"
-            className={ui.compactInput}
-            value={includeBraces ? "with" : "without"}
-            onChange={(event) =>
-              setIncludeBraces(event.target.value === "with")
-            }
-          >
-            <option value="without">No braces</option>
-            <option value="with">With braces</option>
-          </select>
-        </div>
+        <OptionCheckbox
+          id="guidBraceMode"
+          label="Include braces"
+          checked={includeBraces}
+          onChange={setIncludeBraces}
+        />
       </div>
 
       <div className={ui.toolActions}>

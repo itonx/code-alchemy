@@ -2,6 +2,7 @@ import { Icon } from "@iconify/react";
 import { useMemo, useState } from "react";
 import shelterVaultLogo from "../../../assets/ShelterVault.png";
 import CopyButton from "../CopyButton";
+import OptionCheckbox from "../OptionCheckbox";
 import { ui } from "../uiClasses";
 
 type PasswordGeneratorToolProps = {
@@ -108,41 +109,33 @@ export default function PasswordGeneratorTool({
           />
         </div>
 
-        <label className="inline-flex h-10 items-center gap-2 rounded-xl border border-[var(--border)] bg-[color-mix(in_srgb,var(--surface)_92%,var(--bg))] px-3 text-sm text-[color-mix(in_srgb,var(--accent)_30%,var(--muted))]">
-          <input
-            type="checkbox"
-            checked={useLowercase}
-            onChange={(event) => setUseLowercase(event.target.checked)}
-          />
-          Lowercase
-        </label>
+        <OptionCheckbox
+          id="passwordUseLowercase"
+          label="Lowercase"
+          checked={useLowercase}
+          onChange={setUseLowercase}
+        />
 
-        <label className="inline-flex h-10 items-center gap-2 rounded-xl border border-[var(--border)] bg-[color-mix(in_srgb,var(--surface)_92%,var(--bg))] px-3 text-sm text-[color-mix(in_srgb,var(--accent)_30%,var(--muted))]">
-          <input
-            type="checkbox"
-            checked={useUppercase}
-            onChange={(event) => setUseUppercase(event.target.checked)}
-          />
-          Uppercase
-        </label>
+        <OptionCheckbox
+          id="passwordUseUppercase"
+          label="Uppercase"
+          checked={useUppercase}
+          onChange={setUseUppercase}
+        />
 
-        <label className="inline-flex h-10 items-center gap-2 rounded-xl border border-[var(--border)] bg-[color-mix(in_srgb,var(--surface)_92%,var(--bg))] px-3 text-sm text-[color-mix(in_srgb,var(--accent)_30%,var(--muted))]">
-          <input
-            type="checkbox"
-            checked={useDigits}
-            onChange={(event) => setUseDigits(event.target.checked)}
-          />
-          Digits
-        </label>
+        <OptionCheckbox
+          id="passwordUseDigits"
+          label="Digits"
+          checked={useDigits}
+          onChange={setUseDigits}
+        />
 
-        <label className="inline-flex h-10 items-center gap-2 rounded-xl border border-[var(--border)] bg-[color-mix(in_srgb,var(--surface)_92%,var(--bg))] px-3 text-sm text-[color-mix(in_srgb,var(--accent)_30%,var(--muted))]">
-          <input
-            type="checkbox"
-            checked={useSymbols}
-            onChange={(event) => setUseSymbols(event.target.checked)}
-          />
-          Symbols
-        </label>
+        <OptionCheckbox
+          id="passwordUseSymbols"
+          label="Symbols"
+          checked={useSymbols}
+          onChange={setUseSymbols}
+        />
       </div>
 
       <div className={ui.toolActions}>
