@@ -3,6 +3,7 @@ import MDEditor from "@uiw/react-md-editor";
 import "@uiw/react-md-editor/markdown-editor.css";
 import "@uiw/react-markdown-preview/markdown.css";
 import type { ThemeMode } from "../types";
+import rehypeSanitize from "rehype-sanitize";
 import { ui } from "../uiClasses";
 
 type MarkdownEditorToolProps = {
@@ -33,6 +34,9 @@ export default function MarkdownEditorTool({ theme }: MarkdownEditorToolProps) {
           hideToolbar={false}
           visibleDragbar={false}
           height={480}
+          previewOptions={{
+            rehypePlugins: [[rehypeSanitize]],
+          }}
         />
       </div>
     </section>
