@@ -332,7 +332,7 @@ export default function Sidebar({
                 className={`group relative flex items-center gap-2 overflow-visible rounded-xl border border-transparent bg-transparent px-3 py-3 text-left font-semibold text-[color-mix(in_srgb,var(--accent)_28%,var(--muted))] transition-all duration-200 ease-out active:scale-[0.97] ${
                   activeTool === tool.key
                     ? "scale-[1.03] text-[var(--accent)] brightness-105"
-                    : "hover:-translate-y-0.5 hover:border-[color-mix(in_srgb,var(--accent)_18%,transparent)] hover:text-[var(--accent)] hover:brightness-100 hover:shadow-[0_12px_21px_-10px_color-mix(in_srgb,var(--accent)_22%,transparent)]"
+                    : "hover:border-[color-mix(in_srgb,var(--accent)_18%,transparent)] hover:text-[var(--accent)] hover:brightness-100 hover:shadow-[0_12px_21px_-10px_color-mix(in_srgb,var(--accent)_22%,transparent)]"
                 } ${isDesktopCollapsed ? "justify-center" : ""}`}
                 onClick={() => {
                   onToolChange(tool.key);
