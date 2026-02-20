@@ -77,7 +77,7 @@ export default function PasswordGeneratorTool({
         </p>
       </header>
 
-      <div className="grid grid-cols-2 gap-2 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-2 lg:grid-cols-4 items-end">
         <div className={ui.optionCard}>
           <label className={ui.fieldLabel} htmlFor="passwordLength">
             Password length
