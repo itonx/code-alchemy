@@ -8,15 +8,18 @@ import * as pluginMarkdown from "prettier/plugins/markdown";
 import * as pluginPostcss from "prettier/plugins/postcss";
 import * as pluginTypescript from "prettier/plugins/typescript";
 import * as pluginYaml from "prettier/plugins/yaml";
-import Prism from "prismjs";
-import "prismjs/components/prism-clike";
-import "prismjs/components/prism-javascript";
-import "prismjs/components/prism-typescript";
-import "prismjs/components/prism-json";
-import "prismjs/components/prism-css";
-import "prismjs/components/prism-markup";
-import "prismjs/components/prism-markdown";
-import "prismjs/components/prism-yaml";
+import { PrismLight as SyntaxHighlighter } from "react-syntax-highlighter";
+import jsLang from "react-syntax-highlighter/dist/esm/languages/prism/javascript";
+import tsLang from "react-syntax-highlighter/dist/esm/languages/prism/typescript";
+import jsonLang from "react-syntax-highlighter/dist/esm/languages/prism/json";
+import cssLang from "react-syntax-highlighter/dist/esm/languages/prism/css";
+import markupLang from "react-syntax-highlighter/dist/esm/languages/prism/markup";
+import markdownLang from "react-syntax-highlighter/dist/esm/languages/prism/markdown";
+import yamlLang from "react-syntax-highlighter/dist/esm/languages/prism/yaml";
+import {
+  oneDark,
+  oneLight,
+} from "react-syntax-highlighter/dist/esm/styles/prism";
 import type { ThemeMode } from "../types";
 import CopyButton from "../CopyButton";
 import { ui } from "../uiClasses";
@@ -70,13 +73,13 @@ const prettierPlugins = [
   pluginYaml,
 ];
 
-const escapeHtml = (value: string) =>
-  value
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#39;");
+SyntaxHighlighter.registerLanguage("javascript", jsLang);
+SyntaxHighlighter.registerLanguage("typescript", tsLang);
+SyntaxHighlighter.registerLanguage("json", jsonLang);
+SyntaxHighlighter.registerLanguage("css", cssLang);
+SyntaxHighlighter.registerLanguage("markup", markupLang);
+SyntaxHighlighter.registerLanguage("markdown", markdownLang);
+SyntaxHighlighter.registerLanguage("yaml", yamlLang);
 
 export default function CodeFormatterTool({
   theme,
@@ -140,13 +143,6 @@ export default function CodeFormatterTool({
     document.addEventListener("mousedown", handleOutsideClick);
     return () => document.removeEventListener("mousedown", handleOutsideClick);
   }, []);
-
-  const highlightedHtml = useMemo(() => {
-    if (!formattedCode) return "";
-    const grammar = Prism.languages[selectedLanguage.prism];
-    if (!grammar) return escapeHtml(formattedCode);
-    return Prism.highlight(formattedCode, grammar, selectedLanguage.prism);
-  }, [formattedCode, selectedLanguage.prism]);
 
   return (
     <section
@@ -249,9 +245,23 @@ export default function CodeFormatterTool({
             className={`${ui.codePreview} ${theme === "dark" ? "bg-[color-mix(in_srgb,var(--bg)_70%,var(--surface))]" : "bg-[color-mix(in_srgb,var(--surface)_94%,var(--bg))]"}`}
           >
             {formattedCode ? (
-              <pre>
-                <code dangerouslySetInnerHTML={{ __html: highlightedHtml }} />
-              </pre>
+              <SyntaxHighlighter
+                language={selectedLanguage.prism}
+                style={theme === "dark" ? oneDark : oneLight}
+                customStyle={{
+                  margin: 0,
+                  minHeight: "100%",
+                  background: "transparent",
+                }}
+                codeTagProps={{
+                  style: {
+                    fontFamily: "inherit",
+                  },
+                }}
+                wrapLongLines
+              >
+                {formattedCode}
+              </SyntaxHighlighter>
             ) : (
               <p className={ui.emptyMeta}>Formatted code will appear here.</p>
             )}

@@ -9,6 +9,7 @@ import type { ThemeMode, ToastState, ToolKey } from "./app/types";
 import { ui } from "./app/uiClasses";
 
 const CodeFormatterTool = lazy(() => import("./app/tools/CodeFormatterTool"));
+const MarkdownEditorTool = lazy(() => import("./app/tools/MarkdownEditorTool"));
 const QrGeneratorTool = lazy(() => import("./app/tools/QrGeneratorTool"));
 const MinifierTool = lazy(() => import("./app/tools/MinifierTool"));
 const PasswordGeneratorTool = lazy(
@@ -117,6 +118,11 @@ export default function CodeAlchemyApp() {
           {!isSwitchingTool && displayedTool === "formatter" ? (
             <Suspense fallback={<ToolSkeleton />}>
               <CodeFormatterTool theme={theme} onToast={showCopyToast} />
+            </Suspense>
+          ) : null}
+          {!isSwitchingTool && displayedTool === "markdown-editor" ? (
+            <Suspense fallback={<ToolSkeleton />}>
+              <MarkdownEditorTool theme={theme} />
             </Suspense>
           ) : null}
           {!isSwitchingTool && displayedTool === "qr" ? (

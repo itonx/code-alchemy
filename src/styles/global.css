@@ -67,32 +67,32 @@ body {
   );
 }
 
-textarea {
+textarea:not(.w-md-editor-text-input) {
   resize: none !important;
   scrollbar-gutter: stable both-edges;
 }
 
-textarea::-webkit-scrollbar {
+textarea:not(.w-md-editor-text-input)::-webkit-scrollbar {
   width: 9px;
   height: 9px;
 }
 
-textarea::-webkit-scrollbar-track {
+textarea:not(.w-md-editor-text-input)::-webkit-scrollbar-track {
   margin: 3px;
   border-radius: 999px;
   background: color-mix(in srgb, var(--surface) 88%, var(--bg));
 }
 
-textarea::-webkit-scrollbar-thumb {
+textarea:not(.w-md-editor-text-input)::-webkit-scrollbar-thumb {
   border-width: 1.5px;
   border-color: color-mix(in srgb, var(--surface) 90%, var(--bg));
 }
 
-textarea::-webkit-scrollbar-corner {
+textarea:not(.w-md-editor-text-input)::-webkit-scrollbar-corner {
   background: transparent;
 }
 
-textarea::-webkit-resizer {
+textarea:not(.w-md-editor-text-input)::-webkit-resizer {
   display: none;
   width: 0;
   height: 0;
@@ -155,57 +155,71 @@ input[type="number"]::-webkit-outer-spin-button:hover {
   }
 }
 
-.token.comment,
-.token.prolog,
-.token.doctype,
-.token.cdata {
+#formatterOutput .token.comment,
+#formatterOutput .token.prolog,
+#formatterOutput .token.doctype,
+#formatterOutput .token.cdata {
   color: color-mix(in srgb, var(--muted) 90%, var(--surface));
 }
 
-.token.punctuation {
+#formatterOutput .token.punctuation {
   color: color-mix(in srgb, var(--accent) 35%, var(--muted));
 }
 
-.token.property,
-.token.tag,
-.token.boolean,
-.token.number,
-.token.constant,
-.token.symbol,
-.token.deleted {
+#formatterOutput .token.property,
+#formatterOutput .token.tag,
+#formatterOutput .token.boolean,
+#formatterOutput .token.number,
+#formatterOutput .token.constant,
+#formatterOutput .token.symbol,
+#formatterOutput .token.deleted {
   color: color-mix(in srgb, var(--accent) 55%, var(--muted));
 }
 
-.token.selector,
-.token.attr-name,
-.token.string,
-.token.char,
-.token.builtin,
-.token.inserted {
+#formatterOutput .token.selector,
+#formatterOutput .token.attr-name,
+#formatterOutput .token.string,
+#formatterOutput .token.char,
+#formatterOutput .token.builtin,
+#formatterOutput .token.inserted {
   color: color-mix(in srgb, var(--accent) 75%, var(--surface));
 }
 
-.token.operator,
-.token.entity,
-.token.url,
-.language-css .token.string,
-.style .token.string {
+#formatterOutput .token.operator,
+#formatterOutput .token.entity,
+#formatterOutput .token.url,
+#formatterOutput .language-css .token.string,
+#formatterOutput .style .token.string {
   color: color-mix(in srgb, var(--accent) 45%, var(--surface));
 }
 
-.token.atrule,
-.token.attr-value,
-.token.keyword {
+#formatterOutput .token.atrule,
+#formatterOutput .token.attr-value,
+#formatterOutput .token.keyword {
   color: color-mix(in srgb, var(--accent) 60%, var(--muted));
 }
 
-.token.function,
-.token.class-name {
+#formatterOutput .token.function,
+#formatterOutput .token.class-name {
   color: color-mix(in srgb, var(--accent) 50%, var(--surface));
 }
 
-.token.regex,
-.token.important,
-.token.variable {
+#formatterOutput .token.regex,
+#formatterOutput .token.important,
+#formatterOutput .token.variable {
   color: color-mix(in srgb, var(--accent) 58%, var(--muted));
+}
+
+[data-color-mode] .wmde-markdown ul {
+  list-style: disc;
+  padding-left: 1.5rem;
+}
+
+[data-color-mode] .wmde-markdown ol {
+  list-style: decimal;
+  padding-left: 1.5rem;
+}
+
+[data-color-mode] .wmde-markdown li {
+  display: list-item;
 }

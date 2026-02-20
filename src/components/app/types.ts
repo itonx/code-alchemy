@@ -3,6 +3,7 @@ export type ToolKey =
   | "guid"
   | "base64"
   | "formatter"
+  | "markdown-editor"
   | "qr"
   | "minifier"
   | "password"
