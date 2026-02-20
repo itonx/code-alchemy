@@ -26,13 +26,16 @@ export default function SettingsModal({
         aria-modal="true"
         onClick={(event) => event.stopPropagation()}
       >
-        <header className="flex items-center justify-between">
-          <h2 className="m-0 bg-gradient-to-br from-[var(--accent)] to-[color-mix(in_srgb,var(--accent)_50%,var(--surface))] bg-clip-text font-[Cinzel] text-2xl font-bold tracking-wide text-transparent">
+        <header className="flex justify-start mb-2">
+          <div className="grid h-8 w-8 place-items-center rounded-xl border border-[color-mix(in_srgb,var(--accent)_25%,var(--border))] bg-[color-mix(in_srgb,var(--accent)_18%,var(--surface))] text-[var(--accent)]">
+            <Icon icon="tabler:flask-2" width="18" />
+          </div>
+          <h2 className="ml-2 mt-0.5 bg-gradient-to-br from-[var(--accent)] to-[color-mix(in_srgb,var(--accent)_50%,var(--surface))] bg-clip-text font-[Cinzel] text-2xl font-bold tracking-wide text-transparent">
             {APP_NAME}
           </h2>
           <button
             type="button"
-            className="text-[var(--muted)]"
+            className="ml-auto text-[var(--muted)]"
             onClick={onClose}
           >
             <Icon icon="tabler:x" width="18" />
