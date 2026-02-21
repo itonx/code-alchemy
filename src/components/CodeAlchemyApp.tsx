@@ -30,7 +30,11 @@ export default function CodeAlchemyApp() {
   const [isTyping, setIsTyping] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [toast, setToast] = useState<ToastState | null>(null);
+  const [hasScrollableToolContent, setHasScrollableToolContent] =
+    useState(false);
+  const [isToolContentScrolled, setIsToolContentScrolled] = useState(false);
   const switchTimerRef = useRef<number | null>(null);
+  const contentPanelRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     const storedTheme = localStorage.getItem("code-alchemy-theme");
@@ -55,6 +59,35 @@ export default function CodeAlchemyApp() {
     const toastTimer = window.setTimeout(() => setToast(null), 2000);
     return () => window.clearTimeout(toastTimer);
   }, [toast]);
+
+  useEffect(() => {
+    const panel = contentPanelRef.current;
+    if (!panel) {
+      return;
+    }
+
+    const updateScrollState = () => {
+      const isScrollable = panel.scrollHeight - panel.clientHeight > 1;
+      setHasScrollableToolContent(isScrollable);
+      setIsToolContentScrolled(panel.scrollTop > 24);
+    };
+
+    updateScrollState();
+    panel.addEventListener("scroll", updateScrollState, { passive: true });
+    window.addEventListener("resize", updateScrollState);
+
+    const observer = new ResizeObserver(updateScrollState);
+    observer.observe(panel);
+    if (panel.firstElementChild) {
+      observer.observe(panel.firstElementChild);
+    }
+
+    return () => {
+      panel.removeEventListener("scroll", updateScrollState);
+      window.removeEventListener("resize", updateScrollState);
+      observer.disconnect();
+    };
+  }, [displayedTool, isSwitchingTool, isSidebarCollapsed]);
 
   const handleToolChange = (tool: ToolKey) => {
     if (tool === activeTool || tool === displayedTool) {
@@ -104,7 +137,7 @@ export default function CodeAlchemyApp() {
         onCollapsedChange={setIsSidebarCollapsed}
       />
 
-      <section className={ui.contentPanel}>
+      <section ref={contentPanelRef} className={ui.contentPanel}>
         <div
           className={`${ui.contentSwitch} ${isSwitchingTool ? "" : "animate-[content-in_260ms_ease-out]"}`}
         >
@@ -172,6 +205,39 @@ export default function CodeAlchemyApp() {
           {toast.text}
         </div>
       ) : null}
+
+      <div className="fixed bottom-4 right-4 z-30 flex flex-col items-end gap-2">
+        {hasScrollableToolContent && isToolContentScrolled ? (
+          <button
+            type="button"
+            className="group relative inline-flex h-11 w-11 items-center justify-center rounded-full border border-[color-mix(in_srgb,var(--accent)_42%,var(--border))] bg-[color-mix(in_srgb,var(--accent)_22%,var(--surface))] text-(--accent) transition hover:-translate-y-px hover:shadow-[0_0_0_1px_color-mix(in_srgb,var(--accent)_20%,transparent)]"
+            title="Go to top"
+            aria-label="Go to top"
+            onClick={() =>
+              contentPanelRef.current?.scrollTo({ top: 0, behavior: "smooth" })
+            }
+          >
+            <Icon icon="tabler:arrow-up" width="18" />
+            <span className="pointer-events-none absolute right-[calc(100%+0.5rem)] top-1/2 hidden -translate-y-1/2 whitespace-nowrap rounded-lg border border-(--border) bg-(--surface) px-2 py-1 text-xs font-semibold text-(--muted) shadow-[0_10px_24px_color-mix(in_srgb,var(--bg)_35%,transparent)] group-hover:block">
+              Go to top
+            </span>
+          </button>
+        ) : null}
+
+        <a
+          href="https://buymeacoffee.com/itonx"
+          target="_blank"
+          rel="noreferrer"
+          className="group relative inline-flex h-11 w-11 items-center justify-center rounded-full border border-[color-mix(in_srgb,var(--accent)_42%,var(--border))] bg-[color-mix(in_srgb,var(--accent)_22%,var(--surface))] text-(--accent) transition hover:-translate-y-px hover:shadow-[0_0_0_1px_color-mix(in_srgb,var(--accent)_20%,transparent)]"
+          title="Buy me a coffee"
+          aria-label="Buy me a coffee"
+        >
+          <Icon icon="tabler:coffee" width="18" />
+          <span className="pointer-events-none absolute right-[calc(100%+0.5rem)] top-1/2 hidden -translate-y-1/2 whitespace-nowrap rounded-lg border border-(--border) bg-(--surface) px-2 py-1 text-xs font-semibold text-(--muted) shadow-[0_10px_24px_color-mix(in_srgb,var(--bg)_35%,transparent)] group-hover:block">
+            Buy me a coffee
+          </span>
+        </a>
+      </div>
     </main>
   );
 }
