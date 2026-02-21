@@ -46,7 +46,7 @@ export default function SettingsModal({
           <span>Current Theme: {theme}</span>
           <button
             type="button"
-            className={`${ui.button} ${ui.buttonPrimary}`}
+            className={`${ui.button} ${ui.buttonPrimary} h-10 w-44 justify-center`}
             onClick={onToggleTheme}
           >
             <Icon
@@ -55,6 +55,17 @@ export default function SettingsModal({
             />
             Switch Theme
           </button>
+        </div>
+        <div className="mt-3 flex justify-end">
+          <a
+            href="https://buymeacoffee.com/itonx"
+            target="_blank"
+            rel="noreferrer"
+            className={`${ui.button} ${ui.buttonPrimary} h-10 w-44 justify-center`}
+          >
+            <Icon icon="tabler:coffee" width="16" />
+            Buy me a coffee
+          </a>
         </div>
       </div>
     </div>
