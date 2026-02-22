@@ -137,7 +137,10 @@ export default function CodeAlchemyApp() {
         onCollapsedChange={setIsSidebarCollapsed}
       />
 
-      <section ref={contentPanelRef} className={ui.contentPanel}>
+      <section
+        ref={contentPanelRef}
+        className={`${ui.contentPanel} min-[921px]:col-[1/-1] ${isSidebarCollapsed ? "min-[921px]:ml-[92px]" : "min-[921px]:ml-[300px]"}`}
+      >
         <div
           className={`${ui.contentSwitch} ${isSwitchingTool ? "" : "animate-[content-in_260ms_ease-out]"}`}
         >

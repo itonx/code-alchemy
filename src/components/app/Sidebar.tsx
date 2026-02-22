@@ -182,7 +182,7 @@ export default function Sidebar({
   return (
     <aside
       ref={asideRef}
-      className={`relative z-[5] flex flex-col gap-4 overflow-visible border-r border-[var(--border)] bg-[var(--sidebar)] p-[1.1rem_1rem] max-[920px]:h-fit max-[920px]:self-start max-[920px]:gap-2 max-[920px]:border-r-0 max-[920px]:border-b max-[920px]:p-[0.55rem_0.65rem]`}
+      className={`relative z-[5] flex flex-col gap-4 overflow-visible border-r border-[var(--border)] bg-[var(--sidebar)] p-[1.1rem_1rem] min-[921px]:fixed min-[921px]:inset-y-0 min-[921px]:left-0 min-[921px]:h-screen ${isDesktopCollapsed ? "min-[921px]:w-[92px]" : "min-[921px]:w-[300px]"} max-[920px]:h-fit max-[920px]:self-start max-[920px]:gap-2 max-[920px]:border-r-0 max-[920px]:border-b max-[920px]:p-[0.55rem_0.65rem]`}
     >
       <div className="flex flex-col gap-3 max-[920px]:relative max-[920px]:z-[11] max-[920px]:flex-row max-[920px]:items-center max-[920px]:gap-2">
         <header
