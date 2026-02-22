@@ -1,5 +1,6 @@
 import { Icon } from "@iconify/react";
 import { useEffect, useState } from "react";
+import NumberInput from "../NumberInput";
 import { ui } from "../uiClasses";
 
 type ImageResizerToolProps = {};
@@ -180,13 +181,14 @@ export default function ImageResizerTool(_: ImageResizerToolProps) {
           <label className={ui.fieldLabel} htmlFor="resizeWidth">
             Width
           </label>
-          <input
+          <NumberInput
             id="resizeWidth"
-            className={ui.compactInput}
-            type="number"
             min={1}
-            value={targetWidth || ""}
-            onChange={(event) => onWidthChange(Number(event.target.value || 1))}
+            value={targetWidth || 1}
+            defaultValue={1}
+            onChange={onWidthChange}
+            disabled={!sourceMeta}
+            ariaLabel="image width"
           />
         </div>
 
@@ -194,15 +196,14 @@ export default function ImageResizerTool(_: ImageResizerToolProps) {
           <label className={ui.fieldLabel} htmlFor="resizeHeight">
             Height
           </label>
-          <input
+          <NumberInput
             id="resizeHeight"
-            className={ui.compactInput}
-            type="number"
             min={1}
-            value={targetHeight || ""}
-            onChange={(event) =>
-              onHeightChange(Number(event.target.value || 1))
-            }
+            value={targetHeight || 1}
+            defaultValue={1}
+            onChange={onHeightChange}
+            disabled={!sourceMeta}
+            ariaLabel="image height"
           />
         </div>
 
