@@ -24,7 +24,7 @@ export default function ImageCompressorTool(_: ImageCompressorToolProps) {
   const [sourceDataUrl, setSourceDataUrl] = useState("");
   const [sourceInfo, setSourceInfo] = useState<ImageInfo | null>(null);
   const [quality, setQuality] = useState(80);
-  const [format, setFormat] = useState<OutputFormat>("image/jpeg");
+  const [format, setFormat] = useState<OutputFormat>("image/webp");
   const [outputUrl, setOutputUrl] = useState("");
   const [outputInfo, setOutputInfo] = useState<ImageInfo | null>(null);
   const [errorText, setErrorText] = useState("");
