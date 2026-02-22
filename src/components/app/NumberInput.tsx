@@ -63,7 +63,28 @@ export default function NumberInput({
     setDisplayValue(String(safeValue));
   };
 
-  const isNumericInput = (nextValue: string) => /^-?\d*$/.test(nextValue);
+  const isValidPartialInteger = (nextValue: string) => {
+    if (nextValue === "") return true;
+
+    const allowsNegative = typeof min !== "number" || min < 0;
+    if (nextValue === "-") return allowsNegative;
+
+    let startIndex = 0;
+    if (nextValue[0] === "-") {
+      if (!allowsNegative) return false;
+      if (nextValue.length === 1) return true;
+      startIndex = 1;
+    }
+
+    for (let index = startIndex; index < nextValue.length; index += 1) {
+      const code = nextValue.charCodeAt(index);
+      if (code < 48 || code > 57) {
+        return false;
+      }
+    }
+
+    return true;
+  };
 
   const commitFromText = () => {
     const parsedValue = Number(displayValue);
@@ -87,14 +108,8 @@ export default function NumberInput({
         disabled={disabled}
         onChange={(event) => {
           const nextValue = event.target.value;
-          if (isNumericInput(nextValue)) {
+          if (isValidPartialInteger(nextValue)) {
             setDisplayValue(nextValue);
-            if (nextValue !== "" && nextValue !== "-") {
-              const parsedValue = Number(nextValue);
-              if (Number.isFinite(parsedValue)) {
-                commit(parsedValue);
-              }
-            }
           }
         }}
         onBlur={commitFromText}
