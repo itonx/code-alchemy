@@ -30,7 +30,8 @@ body {
   background: var(--bg);
   color: color-mix(in srgb, var(--accent) 35%, var(--muted));
   font-family: Inter, sans-serif;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 * {

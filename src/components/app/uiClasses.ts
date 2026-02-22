@@ -1,10 +1,10 @@
 export const ui = {
   shell:
-    "grid h-screen overflow-hidden bg-[var(--bg)] transition-[grid-template-columns] duration-200 max-[920px]:grid-rows-[auto_minmax(0,1fr)] max-[920px]:content-start",
+    "grid min-h-screen overflow-x-hidden bg-[var(--bg)] transition-[grid-template-columns] duration-200 max-[920px]:grid-rows-[auto_minmax(0,1fr)] max-[920px]:content-start",
   shellExpanded: "min-[921px]:grid-cols-[300px_1fr]",
   shellCollapsed: "min-[921px]:grid-cols-[92px_1fr]",
   contentPanel:
-    "relative flex min-w-0 overflow-x-hidden overflow-y-auto px-3 pb-3 pt-2 md:p-6",
+    "relative flex min-h-full min-w-0 overflow-x-hidden overflow-y-visible px-3 pb-3 pt-2 md:p-6",
   contentSwitch: "relative z-[1] mt-0 flex w-full min-h-0 min-w-0 md:mt-3",
   toolCard:
     "w-full min-w-0 rounded-2xl border border-[var(--border)] bg-[color-mix(in_srgb,var(--surface)_90%,var(--bg))] p-4 flex flex-col gap-3",
