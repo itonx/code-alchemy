@@ -4,33 +4,43 @@ import CopyButton from "../CopyButton";
 import NumberInput from "../NumberInput";
 import OptionCheckbox from "../OptionCheckbox";
 import { ui } from "../uiClasses";
-import { createFormattedGuids } from "../utils/guid";
 
 type GuidToolProps = {
   onToast: () => void;
 };
 
 export default function GuidTool({ onToast }: GuidToolProps) {
-  const [guidOutput, setGuidOutput] = useState("");
+  const [rawGuids, setRawGuids] = useState<string[]>([]);
   const [count, setCount] = useState(1);
   const [caseMode, setCaseMode] = useState<"lowercase" | "uppercase">(
     "lowercase",
   );
   const [includeHyphens, setIncludeHyphens] = useState(true);
   const [includeBraces, setIncludeBraces] = useState(false);
-  const outputValues = useMemo(
-    () => guidOutput.split("\n").filter((entry) => entry.trim().length > 0),
-    [guidOutput],
-  );
+
+  const outputValues = useMemo(() => {
+    return rawGuids.map((rawGuid) => {
+      const compact = rawGuid.replace(/-/g, "");
+      const withHyphens = includeHyphens
+        ? `${compact.slice(0, 8)}-${compact.slice(8, 12)}-${compact.slice(12, 16)}-${compact.slice(16, 20)}-${compact.slice(20)}`
+        : compact;
+      const withCase =
+        caseMode === "uppercase"
+          ? withHyphens.toUpperCase()
+          : withHyphens.toLowerCase();
+
+      return includeBraces ? `{${withCase}}` : withCase;
+    });
+  }, [rawGuids, caseMode, includeHyphens, includeBraces]);
+
+  const guidOutput = useMemo(() => outputValues.join("\n"), [outputValues]);
 
   const generateGuid = () => {
-    const result = createFormattedGuids({
-      count,
-      caseMode,
-      includeHyphens,
-      includeBraces,
-    });
-    setGuidOutput(result.join("\n"));
+    const safeCount = Math.max(1, Math.min(100, Math.trunc(count)));
+    const generated = Array.from({ length: safeCount }, () =>
+      crypto.randomUUID(),
+    );
+    setRawGuids(generated);
   };
 
   return (
@@ -59,29 +69,6 @@ export default function GuidTool({ onToast }: GuidToolProps) {
             ariaLabel="GUID count"
           />
         </div>
-
-        <OptionCheckbox
-          id="guidCaseMode"
-          label="Uppercase"
-          checked={caseMode === "uppercase"}
-          onChange={(checked) =>
-            setCaseMode(checked ? "uppercase" : "lowercase")
-          }
-        />
-
-        <OptionCheckbox
-          id="guidHyphenMode"
-          label="Include hyphens"
-          checked={includeHyphens}
-          onChange={setIncludeHyphens}
-        />
-
-        <OptionCheckbox
-          id="guidBraceMode"
-          label="Include braces"
-          checked={includeBraces}
-          onChange={setIncludeBraces}
-        />
       </div>
 
       <div className={ui.toolActions}>
@@ -95,8 +82,32 @@ export default function GuidTool({ onToast }: GuidToolProps) {
         </button>
       </div>
 
-      <div className={ui.outputHead}>
-        <p className={ui.fieldLabel}>Result</p>
+      <div className={`${ui.outputHead} flex-wrap`}>
+        <div className="flex flex-wrap items-center gap-2">
+          <p className={ui.fieldLabel}>Result</p>
+          <OptionCheckbox
+            id="guidCaseMode"
+            label="Uppercase"
+            checked={caseMode === "uppercase"}
+            onChange={(checked) =>
+              setCaseMode(checked ? "uppercase" : "lowercase")
+            }
+          />
+
+          <OptionCheckbox
+            id="guidHyphenMode"
+            label="Include hyphens"
+            checked={includeHyphens}
+            onChange={setIncludeHyphens}
+          />
+
+          <OptionCheckbox
+            id="guidBraceMode"
+            label="Include braces"
+            checked={includeBraces}
+            onChange={setIncludeBraces}
+          />
+        </div>
         <CopyButton
           value={guidOutput}
           onCopied={onToast}
@@ -106,9 +117,9 @@ export default function GuidTool({ onToast }: GuidToolProps) {
       </div>
       {outputValues.length > 0 ? (
         <div className="flex min-h-[220px] flex-1 flex-col gap-2 overflow-auto">
-          {outputValues.map((entry) => (
+          {outputValues.map((entry, index) => (
             <div
-              key={entry}
+              key={`${entry}-${index}`}
               className="flex items-center justify-between gap-2 rounded-xl border border-[var(--border)] bg-[color-mix(in_srgb,var(--surface)_92%,var(--bg))] p-2"
             >
               <span className="truncate text-sm text-[color-mix(in_srgb,var(--accent)_28%,var(--muted))]">
