@@ -23,6 +23,7 @@ export default function ImageResizerTool(_: ImageResizerToolProps) {
   const [outputUrl, setOutputUrl] = useState("");
   const [outputMeta, setOutputMeta] = useState<ImageMeta | null>(null);
   const [errorText, setErrorText] = useState("");
+  const hasSource = Boolean(sourceMeta);
 
   useEffect(() => {
     return () => {
@@ -176,66 +177,70 @@ export default function ImageResizerTool(_: ImageResizerToolProps) {
         />
       </div>
 
-      <div className="grid grid-cols-1 items-end gap-2 md:grid-cols-3">
-        <div className={ui.optionCard}>
-          <label className={ui.fieldLabel} htmlFor="resizeWidth">
-            Width
-          </label>
-          <NumberInput
-            id="resizeWidth"
-            min={1}
-            value={targetWidth || 1}
-            defaultValue={1}
-            onChange={onWidthChange}
-            disabled={!sourceMeta}
-            ariaLabel="image width"
-          />
-        </div>
+      {hasSource ? (
+        <>
+          <div className="grid grid-cols-1 items-end gap-2 md:grid-cols-3">
+            <div className={ui.optionCard}>
+              <label className={ui.fieldLabel} htmlFor="resizeWidth">
+                Width
+              </label>
+              <NumberInput
+                id="resizeWidth"
+                min={1}
+                value={targetWidth || 1}
+                defaultValue={1}
+                onChange={onWidthChange}
+                disabled={!sourceMeta}
+                ariaLabel="image width"
+              />
+            </div>
 
-        <div className={ui.optionCard}>
-          <label className={ui.fieldLabel} htmlFor="resizeHeight">
-            Height
-          </label>
-          <NumberInput
-            id="resizeHeight"
-            min={1}
-            value={targetHeight || 1}
-            defaultValue={1}
-            onChange={onHeightChange}
-            disabled={!sourceMeta}
-            ariaLabel="image height"
-          />
-        </div>
+            <div className={ui.optionCard}>
+              <label className={ui.fieldLabel} htmlFor="resizeHeight">
+                Height
+              </label>
+              <NumberInput
+                id="resizeHeight"
+                min={1}
+                value={targetHeight || 1}
+                defaultValue={1}
+                onChange={onHeightChange}
+                disabled={!sourceMeta}
+                ariaLabel="image height"
+              />
+            </div>
 
-        <label className="inline-flex h-10 w-full items-center gap-2 rounded-xl border border-[var(--border)] bg-[color-mix(in_srgb,var(--surface)_92%,var(--bg))] px-3 text-sm text-[color-mix(in_srgb,var(--accent)_30%,var(--muted))]">
-          <input
-            type="checkbox"
-            checked={keepAspectRatio}
-            onChange={(event) => setKeepAspectRatio(event.target.checked)}
-          />
-          Keep aspect ratio
-        </label>
-      </div>
+            <label className="inline-flex h-10 w-full items-center gap-2 rounded-xl border border-[var(--border)] bg-[color-mix(in_srgb,var(--surface)_92%,var(--bg))] px-3 text-sm text-[color-mix(in_srgb,var(--accent)_30%,var(--muted))]">
+              <input
+                type="checkbox"
+                checked={keepAspectRatio}
+                onChange={(event) => setKeepAspectRatio(event.target.checked)}
+              />
+              Keep aspect ratio
+            </label>
+          </div>
 
-      <div className={ui.toolActions}>
-        <button
-          type="button"
-          className={`${ui.button} ${ui.buttonPrimary}`}
-          onClick={() => void resizeImage()}
-        >
-          <Icon icon="tabler:dimensions" width="16" />
-          Resize Image
-        </button>
-        <button
-          type="button"
-          className={ui.button}
-          onClick={downloadResized}
-          disabled={!outputUrl}
-        >
-          <Icon icon="tabler:download" width="16" />
-          Download
-        </button>
-      </div>
+          <div className={ui.toolActions}>
+            <button
+              type="button"
+              className={`${ui.button} ${ui.buttonPrimary}`}
+              onClick={() => void resizeImage()}
+            >
+              <Icon icon="tabler:dimensions" width="16" />
+              Resize Image
+            </button>
+            <button
+              type="button"
+              className={ui.button}
+              onClick={downloadResized}
+              disabled={!outputUrl}
+            >
+              <Icon icon="tabler:download" width="16" />
+              Download
+            </button>
+          </div>
+        </>
+      ) : null}
 
       {errorText ? <p className={ui.errorMeta}>{errorText}</p> : null}
 

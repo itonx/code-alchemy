@@ -28,6 +28,7 @@ export default function ImageCompressorTool(_: ImageCompressorToolProps) {
   const [outputUrl, setOutputUrl] = useState("");
   const [outputInfo, setOutputInfo] = useState<ImageInfo | null>(null);
   const [errorText, setErrorText] = useState("");
+  const hasSource = Boolean(sourceInfo);
 
   useEffect(() => {
     return () => {
@@ -167,58 +168,64 @@ export default function ImageCompressorTool(_: ImageCompressorToolProps) {
         />
       </div>
 
-      <div className="grid grid-cols-1 items-end gap-2 md:grid-cols-3">
-        <div className={ui.optionCard}>
-          <label className={ui.fieldLabel} htmlFor="compressFormat">
-            Output format
-          </label>
-          <select
-            id="compressFormat"
-            className={ui.compactInput}
-            value={format}
-            onChange={(event) => setFormat(event.target.value as OutputFormat)}
-          >
-            <option value="image/jpeg">JPEG</option>
-            <option value="image/webp">WebP</option>
-            <option value="image/png">PNG</option>
-          </select>
-        </div>
+      {hasSource ? (
+        <>
+          <div className="grid grid-cols-1 items-end gap-2 md:grid-cols-3">
+            <div className={ui.optionCard}>
+              <label className={ui.fieldLabel} htmlFor="compressFormat">
+                Output format
+              </label>
+              <select
+                id="compressFormat"
+                className={ui.compactInput}
+                value={format}
+                onChange={(event) =>
+                  setFormat(event.target.value as OutputFormat)
+                }
+              >
+                <option value="image/jpeg">JPEG</option>
+                <option value="image/webp">WebP</option>
+                <option value="image/png">PNG</option>
+              </select>
+            </div>
 
-        <div className={ui.optionCard}>
-          <label className={ui.fieldLabel} htmlFor="compressQuality">
-            Quality ({quality}%)
-          </label>
-          <input
-            id="compressQuality"
-            type="range"
-            min={10}
-            max={100}
-            value={quality}
-            className={ui.rangeInput}
-            onChange={(event) => setQuality(Number(event.target.value))}
-          />
-        </div>
-      </div>
+            <div className={ui.optionCard}>
+              <label className={ui.fieldLabel} htmlFor="compressQuality">
+                Quality ({quality}%)
+              </label>
+              <input
+                id="compressQuality"
+                type="range"
+                min={10}
+                max={100}
+                value={quality}
+                className={ui.rangeInput}
+                onChange={(event) => setQuality(Number(event.target.value))}
+              />
+            </div>
+          </div>
 
-      <div className={ui.toolActions}>
-        <button
-          type="button"
-          className={`${ui.button} ${ui.buttonPrimary}`}
-          onClick={() => void compressImage()}
-        >
-          <Icon icon="tabler:photo-down" width="16" />
-          Compress
-        </button>
-        <button
-          type="button"
-          className={ui.button}
-          onClick={downloadCompressed}
-          disabled={!outputUrl}
-        >
-          <Icon icon="tabler:download" width="16" />
-          Download
-        </button>
-      </div>
+          <div className={ui.toolActions}>
+            <button
+              type="button"
+              className={`${ui.button} ${ui.buttonPrimary}`}
+              onClick={() => void compressImage()}
+            >
+              <Icon icon="tabler:photo-down" width="16" />
+              Compress
+            </button>
+            <button
+              type="button"
+              className={ui.button}
+              onClick={downloadCompressed}
+              disabled={!outputUrl}
+            >
+              <Icon icon="tabler:download" width="16" />
+              Download
+            </button>
+          </div>
+        </>
+      ) : null}
 
       {errorText ? <p className={ui.errorMeta}>{errorText}</p> : null}
 
