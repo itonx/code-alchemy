@@ -30,7 +30,9 @@ export default function GuidTool({ onToast }: GuidToolProps) {
   };
 
   return (
-    <section className={`${ui.toolCard} animate-[result-pop_240ms_ease-out]`}>
+    <section
+      className={`${ui.toolCard} h-full animate-[result-pop_240ms_ease-out]`}
+    >
       <header className={ui.toolHeader}>
         <h2 className={ui.toolTitle}>GUID Generator</h2>
         <p className={ui.toolDescription}>
@@ -99,7 +101,7 @@ export default function GuidTool({ onToast }: GuidToolProps) {
           disabled={!guidOutput}
         />
       </div>
-      <div className={ui.textAreaFrame}>
+      <div className={`${ui.textAreaFrame} min-h-[220px] flex-1`}>
         <textarea
           id="guidOutput"
           className={ui.textArea}
