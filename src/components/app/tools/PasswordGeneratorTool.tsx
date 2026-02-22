@@ -50,6 +50,11 @@ export default function PasswordGeneratorTool({
     return aggregate;
   }, [useLowercase, useUppercase, useDigits, useSymbols]);
 
+  const outputValues = useMemo(
+    () => result.split("\n").filter((entry) => entry.trim().length > 0),
+    [result],
+  );
+
   const handleGenerate = () => {
     const safeLength = Math.max(4, Math.min(128, Math.trunc(length)));
     const safeCount = Math.max(1, Math.min(50, Math.trunc(count)));
@@ -151,21 +156,32 @@ export default function PasswordGeneratorTool({
       </div>
 
       <div className={ui.outputHead}>
-        <label className={ui.fieldLabel} htmlFor="passwordOutput">
-          Output
-        </label>
-        <CopyButton value={result} onCopied={onToast} disabled={!result} />
-      </div>
-
-      <div className={`${ui.textAreaFrame} min-h-[220px] flex-1`}>
-        <textarea
-          id="passwordOutput"
-          className={ui.textArea}
-          readOnly
+        <p className={ui.fieldLabel}>Output</p>
+        <CopyButton
           value={result}
-          placeholder="Generated passwords appear here"
+          onCopied={onToast}
+          disabled={!result}
+          idleLabel="Copy all"
         />
       </div>
+
+      {outputValues.length > 0 ? (
+        <div className="flex min-h-[220px] flex-1 flex-col gap-2 overflow-auto">
+          {outputValues.map((entry, index) => (
+            <div
+              key={`${entry}-${index}`}
+              className="flex items-center justify-between gap-2 rounded-xl border border-[var(--border)] bg-[color-mix(in_srgb,var(--surface)_92%,var(--bg))] p-2"
+            >
+              <span className="truncate text-sm text-[color-mix(in_srgb,var(--accent)_28%,var(--muted))]">
+                {entry}
+              </span>
+              <CopyButton value={entry} onCopied={onToast} />
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p className={ui.emptyMeta}>Generated passwords appear here</p>
+      )}
 
       {errorText ? <p className={ui.errorMeta}>{errorText}</p> : null}
 

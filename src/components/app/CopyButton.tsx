@@ -6,12 +6,14 @@ type CopyButtonProps = {
   value: string;
   onCopied: () => void;
   disabled?: boolean;
+  idleLabel?: string;
 };
 
 export default function CopyButton({
   value,
   onCopied,
   disabled = false,
+  idleLabel = "Copy",
 }: CopyButtonProps) {
   const [copied, setCopied] = useState(false);
 
@@ -33,7 +35,7 @@ export default function CopyButton({
       disabled={disabled || !value}
     >
       <Icon icon={copied ? "tabler:check" : "tabler:copy"} width="16" />
-      {copied ? "Copied" : "Copy"}
+      {copied ? "Copied" : idleLabel}
     </button>
   );
 }

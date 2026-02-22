@@ -1,5 +1,5 @@
 import { Icon } from "@iconify/react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import CopyButton from "../CopyButton";
 import NumberInput from "../NumberInput";
 import OptionCheckbox from "../OptionCheckbox";
@@ -18,6 +18,10 @@ export default function GuidTool({ onToast }: GuidToolProps) {
   );
   const [includeHyphens, setIncludeHyphens] = useState(true);
   const [includeBraces, setIncludeBraces] = useState(false);
+  const outputValues = useMemo(
+    () => guidOutput.split("\n").filter((entry) => entry.trim().length > 0),
+    [guidOutput],
+  );
 
   const generateGuid = () => {
     const result = createFormattedGuids({
@@ -92,24 +96,31 @@ export default function GuidTool({ onToast }: GuidToolProps) {
       </div>
 
       <div className={ui.outputHead}>
-        <label className={ui.fieldLabel} htmlFor="guidOutput">
-          Result
-        </label>
+        <p className={ui.fieldLabel}>Result</p>
         <CopyButton
           value={guidOutput}
           onCopied={onToast}
           disabled={!guidOutput}
+          idleLabel="Copy all"
         />
       </div>
-      <div className={`${ui.textAreaFrame} min-h-[220px] flex-1`}>
-        <textarea
-          id="guidOutput"
-          className={ui.textArea}
-          value={guidOutput}
-          readOnly
-          placeholder="Generated GUID will appear here"
-        />
-      </div>
+      {outputValues.length > 0 ? (
+        <div className="flex min-h-[220px] flex-1 flex-col gap-2 overflow-auto">
+          {outputValues.map((entry) => (
+            <div
+              key={entry}
+              className="flex items-center justify-between gap-2 rounded-xl border border-[var(--border)] bg-[color-mix(in_srgb,var(--surface)_92%,var(--bg))] p-2"
+            >
+              <span className="truncate text-sm text-[color-mix(in_srgb,var(--accent)_28%,var(--muted))]">
+                {entry}
+              </span>
+              <CopyButton value={entry} onCopied={onToast} />
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p className={ui.emptyMeta}>Generated GUID will appear here</p>
+      )}
     </section>
   );
 }
