@@ -2,6 +2,7 @@ import { Icon } from "@iconify/react";
 import { useMemo, useState } from "react";
 import shelterVaultLogo from "../../../assets/ShelterVault.png";
 import CopyButton from "../CopyButton";
+import NumberInput from "../NumberInput";
 import OptionCheckbox from "../OptionCheckbox";
 import { ui } from "../uiClasses";
 
@@ -83,14 +84,14 @@ export default function PasswordGeneratorTool({
           <label className={ui.fieldLabel} htmlFor="passwordLength">
             Password length
           </label>
-          <input
+          <NumberInput
             id="passwordLength"
-            className={ui.compactInput}
-            type="number"
             min={4}
             max={128}
             value={length}
-            onChange={(event) => setLength(Number(event.target.value || 12))}
+            defaultValue={12}
+            onChange={setLength}
+            ariaLabel="password length"
           />
         </div>
 
@@ -98,14 +99,14 @@ export default function PasswordGeneratorTool({
           <label className={ui.fieldLabel} htmlFor="passwordCount">
             Password count
           </label>
-          <input
+          <NumberInput
             id="passwordCount"
-            className={ui.compactInput}
-            type="number"
             min={1}
             max={50}
             value={count}
-            onChange={(event) => setCount(Number(event.target.value || 1))}
+            defaultValue={1}
+            onChange={setCount}
+            ariaLabel="password count"
           />
         </div>
 

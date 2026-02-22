@@ -1,6 +1,7 @@
 import { Icon } from "@iconify/react";
 import { useState } from "react";
 import CopyButton from "../CopyButton";
+import NumberInput from "../NumberInput";
 import OptionCheckbox from "../OptionCheckbox";
 import { ui } from "../uiClasses";
 import { createFormattedGuids } from "../utils/guid";
@@ -42,14 +43,14 @@ export default function GuidTool({ onToast }: GuidToolProps) {
           <label className={ui.fieldLabel} htmlFor="guidCountInput">
             Count
           </label>
-          <input
+          <NumberInput
             id="guidCountInput"
-            className={ui.compactInput}
-            type="number"
             min={1}
             max={100}
             value={count}
-            onChange={(event) => setCount(Number(event.target.value || 1))}
+            defaultValue={1}
+            onChange={setCount}
+            ariaLabel="GUID count"
           />
         </div>
 
