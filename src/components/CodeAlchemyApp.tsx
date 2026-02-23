@@ -67,6 +67,18 @@ export default function CodeAlchemyApp() {
     }
 
     const updateScrollState = () => {
+      const panelStyles = window.getComputedStyle(panel);
+      const verticalPadding =
+        Number.parseFloat(panelStyles.paddingTop) +
+        Number.parseFloat(panelStyles.paddingBottom);
+      const panelInnerHeight = Math.max(
+        0,
+        panel.clientHeight - verticalPadding,
+      );
+      panel.style.setProperty(
+        "--content-panel-height",
+        `${panelInnerHeight}px`,
+      );
       const isScrollable = panel.scrollHeight - panel.clientHeight > 1;
       setHasScrollableToolContent(isScrollable);
       setIsToolContentScrolled(panel.scrollTop > 24);

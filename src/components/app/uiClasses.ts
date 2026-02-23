@@ -5,9 +5,10 @@ export const ui = {
   shellCollapsed: "min-[921px]:grid-cols-[92px_1fr]",
   contentPanel:
     "relative min-h-0 min-w-0 overflow-x-hidden overflow-y-auto px-3 pb-3 pt-2 md:p-6",
-  contentSwitch: "relative z-[1] w-full min-h-full min-w-0",
+  contentSwitch:
+    "relative z-[1] w-full min-h-[var(--content-panel-height)] min-w-0",
   toolCard:
-    "w-full min-h-full min-w-0 rounded-2xl border border-[var(--border)] bg-[color-mix(in_srgb,var(--surface)_90%,var(--bg))] p-4 flex flex-col gap-3",
+    "w-full min-h-[max(500px,var(--content-panel-height))] min-w-0 rounded-2xl border border-[var(--border)] bg-[color-mix(in_srgb,var(--surface)_90%,var(--bg))] p-4 flex flex-col gap-3",
   toolHeader: "space-y-1",
   toolTitle:
     "m-0 text-2xl font-bold text-[color-mix(in_srgb,var(--accent)_58%,var(--muted))]",
