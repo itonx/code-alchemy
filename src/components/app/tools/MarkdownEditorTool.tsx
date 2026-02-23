@@ -20,23 +20,17 @@ export default function MarkdownEditorTool({ theme }: MarkdownEditorToolProps) {
         <p className={ui.toolDescription}>Edit markdown with live preview.</p>
       </header>
 
-      <div
-        className="h-full flex-1 overflow-hidden rounded-xl border border-(--border) not-prose"
-        data-color-mode={theme}
-      >
-        <MDEditor
-          className="!h-full"
-          value={sourceMarkdown}
-          onChange={(value) => setSourceMarkdown(value ?? "")}
-          preview="live"
-          hideToolbar={false}
-          visibleDragbar={false}
-          height={480}
-          previewOptions={{
-            rehypePlugins: [[rehypeSanitize]],
-          }}
-        />
-      </div>
+      <MDEditor
+        className="h-full flex-1 max-h-250"
+        value={sourceMarkdown}
+        onChange={(value) => setSourceMarkdown(value ?? "")}
+        preview="live"
+        hideToolbar={false}
+        visibleDragbar={false}
+        previewOptions={{
+          rehypePlugins: [[rehypeSanitize]],
+        }}
+      />
     </section>
   );
 }
