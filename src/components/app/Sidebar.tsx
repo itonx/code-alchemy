@@ -68,7 +68,7 @@ export default function Sidebar({
     const containerRect = container.getBoundingClientRect();
     const targetRect = target.getBoundingClientRect();
     setIndicatorStyle({
-      top: targetRect.top - containerRect.top,
+      top: targetRect.top - containerRect.top + container.scrollTop,
       height: targetRect.height,
     });
   }, [activeTool, filteredTools]);

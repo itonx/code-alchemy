@@ -14,9 +14,7 @@ export default function MarkdownEditorTool({ theme }: MarkdownEditorToolProps) {
   const [sourceMarkdown, setSourceMarkdown] = useState("");
 
   return (
-    <section
-      className={`${ui.toolCard} animate-[result-pop_240ms_ease-out]`}
-    >
+    <section className={`${ui.toolCard} animate-[result-pop_240ms_ease-out]`}>
       <header className={ui.toolHeader}>
         <h2 className={ui.toolTitle}>Markdown Editor</h2>
         <p className={ui.toolDescription}>Edit markdown with live preview.</p>

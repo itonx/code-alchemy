@@ -44,9 +44,7 @@ export default function GuidTool({ onToast }: GuidToolProps) {
   };
 
   return (
-    <section
-      className={`${ui.toolCard} animate-[result-pop_240ms_ease-out]`}
-    >
+    <section className={`${ui.toolCard} animate-[result-pop_240ms_ease-out]`}>
       <header className={ui.toolHeader}>
         <h2 className={ui.toolTitle}>GUID Generator</h2>
         <p className={ui.toolDescription}>
