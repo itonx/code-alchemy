@@ -142,7 +142,7 @@ export default function ImageCompressorTool(_: ImageCompressorToolProps) {
 
   return (
     <section
-      className={`${ui.toolCard} h-full animate-[result-pop_240ms_ease-out]`}
+      className={`${ui.toolCard} animate-[result-pop_240ms_ease-out]`}
     >
       <header className={ui.toolHeader}>
         <h2 className={ui.toolTitle}>Image Compressor</h2>
