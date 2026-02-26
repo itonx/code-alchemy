@@ -209,7 +209,7 @@ export default function Sidebar({
             </div>
           )}
           {!isDesktopCollapsed ? (
-            <h1 className="m-0 bg-gradient-to-br from-[var(--accent)] to-[color-mix(in_srgb,var(--accent)_50%,var(--surface))] bg-clip-text font-[Cinzel] text-[1.24rem] font-bold tracking-wide text-transparent">
+            <h1 className="m-0 bg-gradient-to-br from-[var(--accent)] to-[color-mix(in_srgb,var(--accent)_50%,var(--surface))] bg-clip-text font-[Cinzel] text-[1.24rem] font-bold tracking-wide text-transparent max-[920px]:hidden">
               {APP_NAME}
             </h1>
           ) : null}
