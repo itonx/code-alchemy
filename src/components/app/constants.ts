@@ -8,6 +8,8 @@ export const tools: ToolItem[] = [
   { key: "guid", label: "GUID Generator", icon: "tabler:fingerprint" },
   { key: "base64", label: "Base64 Converter", icon: "tabler:file-code-2" },
   { key: "formatter", label: "Code Formatter", icon: "tabler:brackets-angle" },
+  { key: "aes", label: "AES Encrypt / Decrypt", icon: "tabler:lock" },
+  { key: "text-diff", label: "Text Diff Checker", icon: "tabler:git-compare" },
   { key: "hash", label: "Hash Generator", icon: "tabler:hash" },
   {
     key: "random-number",

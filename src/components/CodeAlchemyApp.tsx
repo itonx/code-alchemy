@@ -9,6 +9,8 @@ import type { ThemeMode, ToastState, ToolKey } from "./app/types";
 import { ui } from "./app/uiClasses";
 
 const CodeFormatterTool = lazy(() => import("./app/tools/CodeFormatterTool"));
+const AesTool = lazy(() => import("./app/tools/AesTool"));
+const TextDiffTool = lazy(() => import("./app/tools/TextDiffTool"));
 const HashGeneratorTool = lazy(() => import("./app/tools/HashGeneratorTool"));
 const RandomNumberGeneratorTool = lazy(
   () => import("./app/tools/RandomNumberGeneratorTool"),
@@ -181,6 +183,16 @@ export default function CodeAlchemyApp() {
           {!isSwitchingTool && displayedTool === "formatter" ? (
             <Suspense fallback={<ToolSkeleton />}>
               <CodeFormatterTool theme={theme} onToast={showCopyToast} />
+            </Suspense>
+          ) : null}
+          {!isSwitchingTool && displayedTool === "aes" ? (
+            <Suspense fallback={<ToolSkeleton />}>
+              <AesTool onToast={showCopyToast} />
+            </Suspense>
+          ) : null}
+          {!isSwitchingTool && displayedTool === "text-diff" ? (
+            <Suspense fallback={<ToolSkeleton />}>
+              <TextDiffTool onToast={showCopyToast} />
             </Suspense>
           ) : null}
           {!isSwitchingTool && displayedTool === "hash" ? (

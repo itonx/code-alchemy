@@ -3,6 +3,8 @@ export type ToolKey =
   | "guid"
   | "base64"
   | "formatter"
+  | "aes"
+  | "text-diff"
   | "hash"
   | "random-number"
   | "color-palette"
