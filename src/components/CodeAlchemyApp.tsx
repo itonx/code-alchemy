@@ -9,6 +9,21 @@ import type { ThemeMode, ToastState, ToolKey } from "./app/types";
 import { ui } from "./app/uiClasses";
 
 const CodeFormatterTool = lazy(() => import("./app/tools/CodeFormatterTool"));
+const HashGeneratorTool = lazy(() => import("./app/tools/HashGeneratorTool"));
+const RandomNumberGeneratorTool = lazy(
+  () => import("./app/tools/RandomNumberGeneratorTool"),
+);
+const ColorPaletteGeneratorTool = lazy(
+  () => import("./app/tools/ColorPaletteGeneratorTool"),
+);
+const LoremIpsumTool = lazy(() => import("./app/tools/LoremIpsumTool"));
+const UrlEncoderDecoderTool = lazy(
+  () => import("./app/tools/UrlEncoderDecoderTool"),
+);
+const JwtDecoderTool = lazy(() => import("./app/tools/JwtDecoderTool"));
+const HttpStatusReferenceTool = lazy(
+  () => import("./app/tools/HttpStatusReferenceTool"),
+);
 const MarkdownEditorTool = lazy(() => import("./app/tools/MarkdownEditorTool"));
 const QrGeneratorTool = lazy(() => import("./app/tools/QrGeneratorTool"));
 const MinifierTool = lazy(() => import("./app/tools/MinifierTool"));
@@ -166,6 +181,41 @@ export default function CodeAlchemyApp() {
           {!isSwitchingTool && displayedTool === "formatter" ? (
             <Suspense fallback={<ToolSkeleton />}>
               <CodeFormatterTool theme={theme} onToast={showCopyToast} />
+            </Suspense>
+          ) : null}
+          {!isSwitchingTool && displayedTool === "hash" ? (
+            <Suspense fallback={<ToolSkeleton />}>
+              <HashGeneratorTool onToast={showCopyToast} />
+            </Suspense>
+          ) : null}
+          {!isSwitchingTool && displayedTool === "random-number" ? (
+            <Suspense fallback={<ToolSkeleton />}>
+              <RandomNumberGeneratorTool onToast={showCopyToast} />
+            </Suspense>
+          ) : null}
+          {!isSwitchingTool && displayedTool === "color-palette" ? (
+            <Suspense fallback={<ToolSkeleton />}>
+              <ColorPaletteGeneratorTool onToast={showCopyToast} />
+            </Suspense>
+          ) : null}
+          {!isSwitchingTool && displayedTool === "lorem-ipsum" ? (
+            <Suspense fallback={<ToolSkeleton />}>
+              <LoremIpsumTool onToast={showCopyToast} />
+            </Suspense>
+          ) : null}
+          {!isSwitchingTool && displayedTool === "url-encoder" ? (
+            <Suspense fallback={<ToolSkeleton />}>
+              <UrlEncoderDecoderTool onToast={showCopyToast} />
+            </Suspense>
+          ) : null}
+          {!isSwitchingTool && displayedTool === "jwt-decoder" ? (
+            <Suspense fallback={<ToolSkeleton />}>
+              <JwtDecoderTool onToast={showCopyToast} />
+            </Suspense>
+          ) : null}
+          {!isSwitchingTool && displayedTool === "http-status" ? (
+            <Suspense fallback={<ToolSkeleton />}>
+              <HttpStatusReferenceTool />
             </Suspense>
           ) : null}
           {!isSwitchingTool && displayedTool === "markdown-editor" ? (

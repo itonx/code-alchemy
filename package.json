@@ -16,6 +16,10 @@
     "@types/react-dom": "^19.2.3",
     "@uiw/react-md-editor": "^4.0.11",
     "astro": "^5.17.1",
+    "colord": "^2.9.3",
+    "crypto-js": "^4.2.0",
+    "jwt-decode": "^4.0.0",
+    "lorem-ipsum": "^2.0.8",
     "prettier": "^3.8.1",
     "prismjs": "^1.30.0",
     "qrcode": "^1.5.4",
@@ -23,6 +27,7 @@
     "react-dom": "^19.2.4",
     "react-syntax-highlighter": "^16.1.0",
     "rehype-sanitize": "^6.0.0",
+    "statuses": "^2.0.2",
     "tailwindcss": "^4.1.18",
     "terser": "^5.46.0"
   },
