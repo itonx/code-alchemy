@@ -48,6 +48,11 @@ const getTimezoneOptions = () => {
   return FALLBACK_TIMEZONE_OPTIONS;
 };
 
+const getUserTimezone = () => {
+  if (typeof Intl === "undefined") return "";
+  return Intl.DateTimeFormat().resolvedOptions().timeZone ?? "";
+};
+
 type SearchableTimezoneSelectProps = {
   id: string;
   label: string;
@@ -154,13 +159,22 @@ export default function TimezoneConverterTool({
   onToast,
 }: TimezoneConverterToolProps) {
   const timezoneOptions = useMemo(() => getTimezoneOptions(), []);
+  const defaultFromZone = useMemo(() => {
+    const userTimezone = getUserTimezone();
+    if (timezoneOptions.includes(userTimezone)) {
+      return userTimezone;
+    }
+
+    return timezoneOptions[0] ?? "UTC";
+  }, [timezoneOptions]);
+  const dateTimeInputRef = useRef<HTMLInputElement | null>(null);
   const [inputDateTime, setInputDateTime] = useState("");
-  const [fromZone, setFromZone] = useState("UTC");
+  const [fromZone, setFromZone] = useState(defaultFromZone);
   const [toZone, setToZone] = useState("America/New_York");
 
   useEffect(() => {
     if (!timezoneOptions.includes(fromZone)) {
-      setFromZone(timezoneOptions[0] ?? "UTC");
+      setFromZone(defaultFromZone);
     }
 
     if (!timezoneOptions.includes(toZone)) {
@@ -170,7 +184,7 @@ export default function TimezoneConverterTool({
           : (timezoneOptions[0] ?? "UTC"),
       );
     }
-  }, [fromZone, toZone, timezoneOptions]);
+  }, [defaultFromZone, fromZone, toZone, timezoneOptions]);
 
   const output = useMemo(() => {
     if (!inputDateTime) return "";
@@ -190,18 +204,32 @@ export default function TimezoneConverterTool({
         </p>
       </header>
 
-      <div className="grid grid-cols-1 gap-2 min-[920px]:grid-cols-[1fr_280px_280px]">
+      <div className="grid grid-cols-1 gap-2 min-[720px]:grid-cols-[max-content_280px_280px]">
         <div className={ui.optionCard}>
           <label className={ui.fieldLabel} htmlFor="tzInputDateTime">
             Date & Time
           </label>
-          <input
-            id="tzInputDateTime"
-            type="datetime-local"
-            className={ui.compactInput}
-            value={inputDateTime}
-            onChange={(event) => setInputDateTime(event.target.value)}
-          />
+          <div className="relative inline-flex w-fit max-w-full">
+            <input
+              ref={dateTimeInputRef}
+              id="tzInputDateTime"
+              type="datetime-local"
+              className={`${ui.compactInput} !w-[24ch] max-w-full pr-10 [color-scheme:light_dark] [&::-webkit-calendar-picker-indicator]:opacity-0`}
+              value={inputDateTime}
+              onChange={(event) => setInputDateTime(event.target.value)}
+            />
+            <button
+              type="button"
+              aria-label="Open date and time picker"
+              className="absolute inset-y-0 right-0 inline-flex w-10 items-center justify-center text-[var(--accent)]"
+              onClick={() => {
+                dateTimeInputRef.current?.showPicker?.();
+                dateTimeInputRef.current?.focus();
+              }}
+            >
+              <Icon icon="tabler:calendar" width="16" />
+            </button>
+          </div>
         </div>
 
         <SearchableTimezoneSelect
