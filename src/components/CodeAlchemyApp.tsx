@@ -11,6 +11,13 @@ import { ui } from "./app/uiClasses";
 const CodeFormatterTool = lazy(() => import("./app/tools/CodeFormatterTool"));
 const AesTool = lazy(() => import("./app/tools/AesTool"));
 const TextDiffTool = lazy(() => import("./app/tools/TextDiffTool"));
+const ColorPickerTool = lazy(() => import("./app/tools/ColorPickerTool"));
+const NumberBaseConverterTool = lazy(
+  () => import("./app/tools/NumberBaseConverterTool"),
+);
+const TimezoneConverterTool = lazy(
+  () => import("./app/tools/TimezoneConverterTool"),
+);
 const HashGeneratorTool = lazy(() => import("./app/tools/HashGeneratorTool"));
 const RandomNumberGeneratorTool = lazy(
   () => import("./app/tools/RandomNumberGeneratorTool"),
@@ -193,6 +200,21 @@ export default function CodeAlchemyApp() {
           {!isSwitchingTool && displayedTool === "text-diff" ? (
             <Suspense fallback={<ToolSkeleton />}>
               <TextDiffTool onToast={showCopyToast} />
+            </Suspense>
+          ) : null}
+          {!isSwitchingTool && displayedTool === "color-picker" ? (
+            <Suspense fallback={<ToolSkeleton />}>
+              <ColorPickerTool onToast={showCopyToast} />
+            </Suspense>
+          ) : null}
+          {!isSwitchingTool && displayedTool === "number-base" ? (
+            <Suspense fallback={<ToolSkeleton />}>
+              <NumberBaseConverterTool onToast={showCopyToast} />
+            </Suspense>
+          ) : null}
+          {!isSwitchingTool && displayedTool === "timezone-converter" ? (
+            <Suspense fallback={<ToolSkeleton />}>
+              <TimezoneConverterTool onToast={showCopyToast} />
             </Suspense>
           ) : null}
           {!isSwitchingTool && displayedTool === "hash" ? (

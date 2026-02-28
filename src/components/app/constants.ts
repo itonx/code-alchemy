@@ -10,6 +10,17 @@ export const tools: ToolItem[] = [
   { key: "formatter", label: "Code Formatter", icon: "tabler:brackets-angle" },
   { key: "aes", label: "AES Encrypt / Decrypt", icon: "tabler:lock" },
   { key: "text-diff", label: "Text Diff Checker", icon: "tabler:git-compare" },
+  { key: "color-picker", label: "Color Picker", icon: "tabler:color-picker" },
+  {
+    key: "number-base",
+    label: "Number Base Converter",
+    icon: "tabler:binary-tree-2",
+  },
+  {
+    key: "timezone-converter",
+    label: "Timezone Converter",
+    icon: "tabler:world",
+  },
   { key: "hash", label: "Hash Generator", icon: "tabler:hash" },
   {
     key: "random-number",
