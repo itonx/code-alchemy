@@ -1,4 +1,5 @@
 import { Icon } from "@iconify/react";
+import bcrypt from "bcryptjs";
 import CryptoJS from "crypto-js";
 import { useRef, useState } from "react";
 import CopyButton from "../CopyButton";
@@ -10,7 +11,7 @@ type HashGeneratorToolProps = {
 };
 
 type HashResult = {
-  algorithm: "MD5" | "SHA-1" | "SHA-256" | "SHA-384" | "SHA-512";
+  algorithm: "MD5" | "SHA-1" | "SHA-256" | "SHA-384" | "SHA-512" | "BCRYPT";
   value: string;
 };
 
@@ -20,6 +21,7 @@ const HASH_ALGORITHMS: HashResult["algorithm"][] = [
   "SHA-256",
   "SHA-384",
   "SHA-512",
+  "BCRYPT",
 ];
 
 const toWordArray = (bytes: Uint8Array) => {
@@ -50,6 +52,15 @@ const createHashes = (
   {
     algorithm: "SHA-512",
     value: CryptoJS.SHA512(payload).toString(CryptoJS.enc.Hex),
+  },
+  {
+    algorithm: "BCRYPT",
+    value: bcrypt.hashSync(
+      typeof payload === "string"
+        ? payload
+        : payload.toString(CryptoJS.enc.Hex),
+      10,
+    ),
   },
 ];
 

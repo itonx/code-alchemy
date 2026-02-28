@@ -16,6 +16,7 @@
     "@types/react-dom": "^19.2.3",
     "@uiw/react-md-editor": "^4.0.11",
     "astro": "^5.17.1",
+    "bcryptjs": "^3.0.3",
     "colord": "^2.9.3",
     "crypto-js": "^4.2.0",
     "jwt-decode": "^4.0.0",
