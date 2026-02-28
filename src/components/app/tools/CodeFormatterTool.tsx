@@ -1,6 +1,6 @@
 import { Icon } from "@iconify/react";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { format } from "prettier/standalone";
+import { useEffect, useState } from "react";
+import { format, getSupportInfo } from "prettier/standalone";
 import * as pluginBabel from "prettier/plugins/babel";
 import * as pluginEstree from "prettier/plugins/estree";
 import * as pluginHtml from "prettier/plugins/html";
@@ -8,18 +8,13 @@ import * as pluginMarkdown from "prettier/plugins/markdown";
 import * as pluginPostcss from "prettier/plugins/postcss";
 import * as pluginTypescript from "prettier/plugins/typescript";
 import * as pluginYaml from "prettier/plugins/yaml";
-import { PrismLight as SyntaxHighlighter } from "react-syntax-highlighter";
-import jsLang from "react-syntax-highlighter/dist/esm/languages/prism/javascript";
-import tsLang from "react-syntax-highlighter/dist/esm/languages/prism/typescript";
-import jsonLang from "react-syntax-highlighter/dist/esm/languages/prism/json";
-import cssLang from "react-syntax-highlighter/dist/esm/languages/prism/css";
-import markupLang from "react-syntax-highlighter/dist/esm/languages/prism/markup";
-import markdownLang from "react-syntax-highlighter/dist/esm/languages/prism/markdown";
-import yamlLang from "react-syntax-highlighter/dist/esm/languages/prism/yaml";
+import hljs from "highlight.js/lib/core";
+import { Light as SyntaxHighlighter } from "react-syntax-highlighter";
+import * as hljsLanguageModules from "react-syntax-highlighter/dist/esm/languages/hljs";
 import {
-  oneDark,
-  oneLight,
-} from "react-syntax-highlighter/dist/esm/styles/prism";
+  atomOneDark,
+  atomOneLight,
+} from "react-syntax-highlighter/dist/esm/styles/hljs";
 import type { ThemeMode } from "../types";
 import CopyButton from "../CopyButton";
 import { ui } from "../uiClasses";
@@ -29,39 +24,34 @@ type CodeFormatterToolProps = {
   onToast: () => void;
 };
 
-type SupportedLanguage = {
-  key: string;
-  label: string;
-  parser:
-    | "babel"
-    | "typescript"
-    | "json"
-    | "css"
-    | "html"
-    | "markdown"
-    | "yaml";
-  prism: string;
+type DetectedLanguage = {
+  hljs: string;
 };
 
-const LANGUAGE_OPTIONS: SupportedLanguage[] = [
-  {
-    key: "javascript",
-    label: "JavaScript",
-    parser: "babel",
-    prism: "javascript",
-  },
-  {
-    key: "typescript",
-    label: "TypeScript",
-    parser: "typescript",
-    prism: "typescript",
-  },
-  { key: "json", label: "JSON", parser: "json", prism: "json" },
-  { key: "html", label: "HTML", parser: "html", prism: "markup" },
-  { key: "css", label: "CSS", parser: "css", prism: "css" },
-  { key: "markdown", label: "Markdown", parser: "markdown", prism: "markdown" },
-  { key: "yaml", label: "YAML", parser: "yaml", prism: "yaml" },
-];
+type HljsLanguageFactory = (hljsInstance: unknown) => unknown;
+
+const ALL_HLJS_LANGUAGES = Object.entries(hljsLanguageModules).filter(
+  (entry): entry is [string, HljsLanguageFactory] =>
+    typeof entry[1] === "function",
+);
+
+const LANGUAGE_ALIASES: Record<string, string> = {
+  js: "javascript",
+  ts: "typescript",
+  yml: "yaml",
+  md: "markdown",
+  cs: "csharp",
+};
+
+const PRETTIER_LANGUAGE_ALIASES: Record<string, string[]> = {
+  xml: ["html"],
+  vue: ["html"],
+  angular: ["html"],
+  js: ["javascript"],
+  ts: ["typescript"],
+  yml: ["yaml"],
+  md: ["markdown"],
+};
 
 const prettierPlugins = [
   pluginBabel,
@@ -73,13 +63,72 @@ const prettierPlugins = [
   pluginYaml,
 ];
 
-SyntaxHighlighter.registerLanguage("javascript", jsLang);
-SyntaxHighlighter.registerLanguage("typescript", tsLang);
-SyntaxHighlighter.registerLanguage("json", jsonLang);
-SyntaxHighlighter.registerLanguage("css", cssLang);
-SyntaxHighlighter.registerLanguage("markup", markupLang);
-SyntaxHighlighter.registerLanguage("markdown", markdownLang);
-SyntaxHighlighter.registerLanguage("yaml", yamlLang);
+const toLookupKey = (value: string) =>
+  value
+    .trim()
+    .toLowerCase()
+    .replace(/^[.]/, "")
+    .replace(/[\s_]+/g, "-");
+
+const normalizeLanguageName = (languageName: string) =>
+  LANGUAGE_ALIASES[languageName] ?? languageName;
+
+let prettierParserLookupPromise: Promise<Map<string, string>> | null = null;
+
+const getPrettierParserLookup = async () => {
+  if (!prettierParserLookupPromise) {
+    prettierParserLookupPromise = (async () => {
+      const supportInfo = await Promise.resolve(
+        getSupportInfo(),
+      );
+      const map = new Map<string, string>();
+
+      for (const language of supportInfo.languages) {
+        const parser = language.parsers?.[0];
+        if (!parser) continue;
+
+        const candidates = [
+          language.name,
+          ...(language.aliases ?? []),
+          ...(language.extensions ?? []),
+          ...(language.filenames ?? []),
+          ...(language.interpreters ?? []),
+          ...(language.vscodeLanguageIds ?? []),
+        ].filter((item): item is string => typeof item === "string");
+
+        for (const candidate of candidates) {
+          const key = toLookupKey(candidate);
+          if (!map.has(key)) {
+            map.set(key, parser);
+          }
+        }
+      }
+
+      return map;
+    })();
+  }
+
+  return prettierParserLookupPromise;
+};
+
+const resolveParserForLanguage = async (languageName: string) => {
+  const lookup = await getPrettierParserLookup();
+  const normalized = toLookupKey(languageName);
+  const aliasCandidates = PRETTIER_LANGUAGE_ALIASES[normalized] ?? [];
+  const candidates = [normalized, ...aliasCandidates.map(toLookupKey)];
+
+  for (const candidate of candidates) {
+    const parser = lookup.get(candidate);
+    if (parser) return parser;
+  }
+
+  return null;
+};
+
+for (const [name, languageFactory] of ALL_HLJS_LANGUAGES) {
+  SyntaxHighlighter.registerLanguage(name, languageFactory);
+  hljs.registerLanguage(name, languageFactory);
+}
 
 export default function CodeFormatterTool({
   theme,
@@ -87,62 +136,60 @@ export default function CodeFormatterTool({
 }: CodeFormatterToolProps) {
   const [sourceCode, setSourceCode] = useState("");
   const [formattedCode, setFormattedCode] = useState("");
-  const [selectedLanguage, setSelectedLanguage] = useState<SupportedLanguage>(
-    LANGUAGE_OPTIONS.find((option) => option.key === "json") ??
-      LANGUAGE_OPTIONS[0],
-  );
-  const [languageSearch, setLanguageSearch] = useState("");
-  const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
-  const [formatError, setFormatError] = useState("");
-  const languagePickerRef = useRef<HTMLDivElement | null>(null);
+  const [detectedLanguage, setDetectedLanguage] =
+    useState<DetectedLanguage | null>(null);
 
-  const visibleLanguages = useMemo(
-    () =>
-      LANGUAGE_OPTIONS.filter((item) =>
-        item.label.toLowerCase().includes(languageSearch.trim().toLowerCase()),
-      ),
-    [languageSearch],
-  );
+  const detectLanguage = (input: string) => {
+    const highlighted = hljs.highlightAuto(input);
+    if (!highlighted.language) return null;
+
+    const normalized = normalizeLanguageName(highlighted.language);
+    return {
+      hljs: normalized,
+    };
+  };
 
   const runFormat = async () => {
     if (!sourceCode.trim()) {
       setFormattedCode("");
-      setFormatError("");
+      setDetectedLanguage(null);
+      return;
+    }
+
+    const language = detectLanguage(sourceCode);
+    setDetectedLanguage(language);
+
+    if (!language) {
+      setFormattedCode("");
+      return;
+    }
+
+    const parser = await resolveParserForLanguage(language.hljs);
+    if (!parser) {
+      setFormattedCode(sourceCode);
       return;
     }
 
     try {
       const output = await format(sourceCode, {
-        parser: selectedLanguage.parser,
+        parser,
         plugins: prettierPlugins,
       });
       setFormattedCode(output);
-      setFormatError("");
     } catch {
-      setFormatError(`Cannot format this input as ${selectedLanguage.label}.`);
+      setFormattedCode(sourceCode);
     }
   };
 
   useEffect(() => {
     if (!sourceCode.trim()) {
       setFormattedCode("");
-      setFormatError("");
+      setDetectedLanguage(null);
       return;
     }
-    void runFormat();
-  }, [selectedLanguage.key]);
 
-  useEffect(() => {
-    const handleOutsideClick = (event: MouseEvent) => {
-      if (!languagePickerRef.current) return;
-      if (!languagePickerRef.current.contains(event.target as Node)) {
-        setShowLanguageDropdown(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleOutsideClick);
-    return () => document.removeEventListener("mousedown", handleOutsideClick);
-  }, []);
+    setDetectedLanguage(detectLanguage(sourceCode));
+  }, [sourceCode]);
 
   return (
     <section className={`${ui.toolCard} animate-[result-pop_240ms_ease-out]`}>
@@ -152,54 +199,6 @@ export default function CodeFormatterTool({
           Format source code with language-aware rules.
         </p>
       </header>
-
-      <div className="relative z-[6] flex items-center gap-2">
-        <div className="relative w-full max-w-[300px]" ref={languagePickerRef}>
-          <button
-            type="button"
-            className={`${ui.compactInput} flex items-center justify-between`}
-            onClick={() => setShowLanguageDropdown((value) => !value)}
-          >
-            <span>{selectedLanguage.label}</span>
-            <Icon icon="tabler:chevron-down" width="16" />
-          </button>
-
-          {showLanguageDropdown ? (
-            <div className="absolute left-0 top-[calc(100%+0.4rem)] z-20 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] p-2 shadow-[0_16px_28px_color-mix(in_srgb,var(--accent)_12%,transparent)]">
-              <div className="flex items-center gap-2 rounded-lg border border-[var(--border)] px-2 py-1.5">
-                <Icon icon="tabler:search" width="14" />
-                <input
-                  type="text"
-                  value={languageSearch}
-                  onChange={(event) => setLanguageSearch(event.target.value)}
-                  placeholder="Search language"
-                  className="w-full border-0 bg-transparent text-[color-mix(in_srgb,var(--accent)_35%,var(--muted))] outline-none"
-                />
-              </div>
-              <div className="mt-2 flex max-h-[180px] flex-col gap-1 overflow-auto">
-                {visibleLanguages.map((item) => (
-                  <button
-                    key={item.key}
-                    type="button"
-                    className={`rounded-lg border px-2 py-1.5 text-left font-semibold ${
-                      selectedLanguage.key === item.key
-                        ? "border-[color-mix(in_srgb,var(--accent)_26%,var(--border))] bg-[color-mix(in_srgb,var(--accent)_12%,var(--surface))] text-[var(--accent)]"
-                        : "border-transparent bg-transparent text-[color-mix(in_srgb,var(--accent)_35%,var(--muted))]"
-                    }`}
-                    onClick={() => {
-                      setSelectedLanguage(item);
-                      setLanguageSearch("");
-                      setShowLanguageDropdown(false);
-                    }}
-                  >
-                    {item.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-          ) : null}
-        </div>
-      </div>
 
       <div className="relative z-[1] grid flex-1 min-h-0 grid-cols-1 gap-3 min-[920px]:grid-cols-2">
         <div className="flex min-h-0 min-w-0 flex-col gap-2">
@@ -244,8 +243,8 @@ export default function CodeFormatterTool({
           >
             {formattedCode ? (
               <SyntaxHighlighter
-                language={selectedLanguage.prism}
-                style={theme === "dark" ? oneDark : oneLight}
+                language={detectedLanguage?.hljs}
+                style={theme === "dark" ? atomOneDark : atomOneLight}
                 customStyle={{
                   margin: 0,
                   minHeight: "100%",
@@ -264,7 +263,6 @@ export default function CodeFormatterTool({
               <p className={ui.emptyMeta}>Formatted code will appear here.</p>
             )}
           </div>
-          {formatError ? <p className={ui.errorMeta}>{formatError}</p> : null}
         </div>
       </div>
     </section>
