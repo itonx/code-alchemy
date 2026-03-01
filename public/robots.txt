@@ -1,0 +1,10 @@
+# robots.txt for Code Alchemy
+# Allow all bots to crawl the single-page app
+User-agent: *
+Allow: /
+
+# Point to the sitemap
+Sitemap: https://codealchemy.app/sitemap.xml
+
+# Host declaration (optional)
+Host: https://codealchemy.app

@@ -3,18 +3,24 @@
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width" />
-		<meta name="description" content="Code Alchemy - DEV Toolkit for Web" />
+		<meta name="description" content="Code Alchemy — a free online developer toolkit with lightweight web tools for everyday tasks: code formatting, Base64, AES, hash generation, JWT decoding, image compression & resizing, color palette tools, QR generation, password generation and more." />
+		<link rel="canonical" href="https://codealchemy.app" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<link rel="icon" href="/favicon.ico" />
+		<meta name="author" content="itonx" />
+		<meta name="keywords" content="developer tools, web tools, code formatter, base64, aes, hash generator, jwt decoder, image compressor, image resizer, color palette, qr generator, password generator, lorem ipsum" />
+		<meta name="robots" content="index, follow" />
+		<meta name="theme-color" content="#0ea5a4" />
 		<meta name="generator" content={Astro.generator} />
-		<title>Code Alchemy</title>
+		<title>Code Alchemy — Developer Toolkit for Web • Everyday tools for developers</title>
 		<!-- SEO information		 -->
 
 		<meta property="og:url" content="https://codealchemy.app"/>
 		<meta property="og:type" content="website"/>
-		<meta property="og:title" content="Code Alchemy"/>
-		<meta property="og:description" content="Everyday tools for developers"/>
+		<meta property="og:title" content="Code Alchemy — Developer Toolkit for Web"/>
+		<meta property="og:description" content="Free web tools for developers: format code, encode/decode, compress images, convert numbers, generate hashes, create QR codes and more."/>
 		<meta property="og:image" content="https://codealchemy.app/code-alchemy.png"/>
+		<meta property="og:image:alt" content="Code Alchemy — developer toolkit preview"/>
 		<meta property="og:image:width" content="1200" />
 		<meta property="og:image:height" content="630" />
 		<meta property="og:site_name" content="Code Alchemy" />	
@@ -22,20 +28,53 @@
 		
 		<meta name="twitter:card" content="summary_large_image"/>
 		<meta name="twitter:site" content="https://github.com/itonx/code-alchemy"/>
-		<meta name="twitter:creator" content="https://github.com/itonx"/>
-		<meta name="twitter:title" content="Code Alchemy"/>
-		<meta name="twitter:description" content="Everyday tools for developers"/>
+		<meta name="twitter:creator" content="https://itonx.dev"/>
+		<meta name="twitter:title" content="Code Alchemy — Developer Toolkit for Web"/>
+		<meta name="twitter:description" content="Free online developer toolkit with everyday web utilities for developers."/>
 		<meta name="twitter:image" content="https://codealchemy.app/code-alchemy.png" />
 		<script type="application/ld+json">
 		{
-		"@context": "https://schema.org",
-		"@type": "WebSite",
-		"name": "Code Alchemy",
-		"url": "https://codealchemy.app",
-		"description": "Everyday tools for developers",
-		"author": "https://itonx.dev"
+		  "@context": "https://schema.org",
+		  "@graph": [
+		    {
+		      "@type": "WebSite",
+		      "@id": "https://codealchemy.app/#website",
+		      "url": "https://codealchemy.app",
+		      "name": "Code Alchemy",
+		      "description": "Free online developer toolkit with lightweight web tools for everyday developer tasks.",
+		      "publisher": {
+		        "@type": "Person",
+		        "name": "itonx",
+		        "url": "https://itonx.dev",
+		        "sameAs": ["https://itonx.dev"]
+		      },
+		      "potentialAction": {
+		        "@type": "SearchAction",
+		        "target": "https://codealchemy.app/?q={search_term_string}",
+		        "query-input": "required name=search_term_string"
+		      }
+		    },
+		    {
+		      "@type": "SoftwareApplication",
+		      "name": "Code Alchemy",
+		      "url": "https://codealchemy.app",
+		      "description": "A collection of free developer web tools: code formatter, Base64, AES, hash generator, JWT decoder, image compressor, image resizer, color palette generator, QR generator, password generator and more.",
+		      "applicationCategory": "DeveloperTool",
+		      "author": {
+		        "@type": "Person",
+		        "name": "itonx",
+		        "url": "https://itonx.dev"
+		      },
+		      "operatingSystem": "All",
+		      "offers": {
+		        "@type": "Offer",
+		        "price": "0",
+		        "priceCurrency": "USD"
+		      }
+		    }
+		  ]
 		}
-		</script>		
+		</script>
 	</head>
 	<body>
 		<slot />
