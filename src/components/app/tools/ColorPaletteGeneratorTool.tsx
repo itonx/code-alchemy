@@ -131,9 +131,9 @@ export default function ColorPaletteGeneratorTool({
 
       {palette.length > 0 ? (
         <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
-          {palette.map((colorValue) => (
+          {palette.map((colorValue, index) => (
             <div
-              key={colorValue}
+              key={`${colorValue}-${index}`}
               className="rounded-xl border border-[var(--border)] bg-[color-mix(in_srgb,var(--surface)_92%,var(--bg))] p-2"
             >
               <div
