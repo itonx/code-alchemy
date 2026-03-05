@@ -13,9 +13,13 @@ export const fromTextToBase64 = (value: string) => {
   return toBase64(encoded);
 };
 
-export const fromBase64ToText = (value: string) => {
+export const fromBase64ToBytes = (value: string) => {
   const normalized = value.replace(/\s/g, "");
   const binary = atob(normalized);
-  const bytes = Uint8Array.from(binary, (char) => char.charCodeAt(0));
+  return Uint8Array.from(binary, (char) => char.charCodeAt(0));
+};
+
+export const fromBase64ToText = (value: string) => {
+  const bytes = fromBase64ToBytes(value);
   return new TextDecoder().decode(bytes);
 };

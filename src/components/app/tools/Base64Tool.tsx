@@ -1,8 +1,14 @@
 import { Icon } from "@iconify/react";
-import { useState } from "react";
+import { fileTypeFromBuffer } from "file-type";
+import { useEffect, useState } from "react";
 import CopyButton from "../CopyButton";
 import { ui } from "../uiClasses";
-import { fromBase64ToText, fromTextToBase64, toBase64 } from "../utils/base64";
+import {
+  fromBase64ToBytes,
+  fromBase64ToText,
+  fromTextToBase64,
+  toBase64,
+} from "../utils/base64";
 
 type Base64ToolProps = {
   onToast: () => void;
@@ -13,20 +19,77 @@ export default function Base64Tool({ onToast }: Base64ToolProps) {
   const [resultValue, setResultValue] = useState("");
   const [selectedFileName, setSelectedFileName] = useState("");
   const [errorText, setErrorText] = useState("");
+  const [decodedFile, setDecodedFile] = useState<{
+    url: string;
+    name: string;
+    size: number;
+  } | null>(null);
 
-  const encodeText = () => {
-    setResultValue(fromTextToBase64(inputValue));
-    setSelectedFileName("");
-    setErrorText("");
+  const clearDecodedFile = () => {
+    setDecodedFile((previousValue) => {
+      if (previousValue) {
+        URL.revokeObjectURL(previousValue.url);
+      }
+      return null;
+    });
   };
 
-  const decodeText = () => {
+  const resetOutputs = () => {
+    setResultValue("");
+    setSelectedFileName("");
+    setErrorText("");
+    clearDecodedFile();
+  };
+
+  const isLikelyTextBytes = (bytes: Uint8Array) => {
+    if (!bytes.length) return true;
+
+    const sample = bytes.subarray(0, 4096);
+    let controlCount = 0;
+    for (const byteValue of sample) {
+      if (byteValue === 9 || byteValue === 10 || byteValue === 13) continue;
+      if (byteValue < 32 || byteValue === 127) {
+        controlCount += 1;
+      }
+    }
+
+    return controlCount / sample.length < 0.02;
+  };
+
+  useEffect(() => {
+    return () => {
+      clearDecodedFile();
+    };
+  }, []);
+
+  const encodeText = () => {
+    resetOutputs();
+    setResultValue(fromTextToBase64(inputValue));
+  };
+
+  const decodeText = async () => {
+    resetOutputs();
     try {
+      const decodedBytes = fromBase64ToBytes(inputValue);
+
+      if (!isLikelyTextBytes(decodedBytes)) {
+        const detectedType = await fileTypeFromBuffer(decodedBytes);
+        const extension = detectedType?.ext ?? "bin";
+        const decodedBlob = new Blob([decodedBytes], {
+          type: detectedType?.mime ?? "application/octet-stream",
+        });
+        setDecodedFile({
+          url: URL.createObjectURL(decodedBlob),
+          name: `decoded-file.${extension}`,
+          size: decodedBlob.size,
+        });
+        return;
+      }
+
       const decoded = fromBase64ToText(inputValue);
       setResultValue(decoded);
-      setSelectedFileName("");
-      setErrorText("");
     } catch {
+      clearDecodedFile();
       setErrorText("Invalid Base64 input.");
     }
   };
@@ -34,6 +97,7 @@ export default function Base64Tool({ onToast }: Base64ToolProps) {
   const handleFileEncode = async (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
+    resetOutputs();
     const targetFile = event.target.files?.[0];
     if (!targetFile) return;
 
@@ -41,7 +105,6 @@ export default function Base64Tool({ onToast }: Base64ToolProps) {
     const fileBytes = new Uint8Array(fileBuffer);
     setResultValue(toBase64(fileBytes));
     setSelectedFileName(targetFile.name);
-    setErrorText("");
   };
 
   return (
@@ -79,7 +142,9 @@ export default function Base64Tool({ onToast }: Base64ToolProps) {
         <button
           type="button"
           className={ui.button}
-          onClick={decodeText}
+          onClick={() => {
+            void decodeText();
+          }}
           disabled={!inputValue}
         >
           <Icon icon="tabler:file-import" width="16" />
@@ -106,21 +171,40 @@ export default function Base64Tool({ onToast }: Base64ToolProps) {
         <label className={ui.fieldLabel} htmlFor="base64Output">
           Output
         </label>
-        <CopyButton
-          value={resultValue}
-          onCopied={onToast}
-          disabled={!resultValue}
-        />
+        {decodedFile ? (
+          <a
+            href={decodedFile.url}
+            download={decodedFile.name}
+            className={ui.button}
+          >
+            <Icon icon="tabler:download" width="16" />
+            Download File
+          </a>
+        ) : (
+          <CopyButton
+            value={resultValue}
+            onCopied={onToast}
+            disabled={!resultValue}
+          />
+        )}
       </div>
-      <div className={ui.textAreaFrame}>
-        <textarea
-          id="base64Output"
-          className={ui.textArea}
-          value={resultValue}
-          readOnly
-          placeholder="Converted output appears here"
-        />
-      </div>
+      {decodedFile ? (
+        <div className={ui.textAreaFrame}>
+          <div className="p-3 text-sm text-(--muted)">
+            Decoded file is ready ({decodedFile.size.toLocaleString()} bytes).
+          </div>
+        </div>
+      ) : (
+        <div className={ui.textAreaFrame}>
+          <textarea
+            id="base64Output"
+            className={ui.textArea}
+            value={resultValue}
+            readOnly
+            placeholder="Converted output appears here"
+          />
+        </div>
+      )}
     </section>
   );
 }
