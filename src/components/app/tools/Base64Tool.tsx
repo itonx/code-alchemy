@@ -3,12 +3,7 @@ import { fileTypeFromBuffer } from "file-type";
 import { useEffect, useState } from "react";
 import CopyButton from "../CopyButton";
 import { ui } from "../uiClasses";
-import {
-  fromBase64ToBytes,
-  fromBase64ToText,
-  fromTextToBase64,
-  toBase64,
-} from "../utils/base64";
+import { fromBase64ToBytes, fromTextToBase64, toBase64 } from "../utils/base64";
 
 type Base64ToolProps = {
   onToast: () => void;
@@ -23,6 +18,8 @@ export default function Base64Tool({ onToast }: Base64ToolProps) {
     url: string;
     name: string;
     size: number;
+    mime: string;
+    isPdf: boolean;
   } | null>(null);
 
   const clearDecodedFile = () => {
@@ -73,20 +70,25 @@ export default function Base64Tool({ onToast }: Base64ToolProps) {
       const decodedBytes = fromBase64ToBytes(inputValue);
 
       if (!isLikelyTextBytes(decodedBytes)) {
-        const detectedType = await fileTypeFromBuffer(decodedBytes);
+        const detectedType = await fileTypeFromBuffer(
+          decodedBytes.subarray(0, 8192),
+        );
         const extension = detectedType?.ext ?? "bin";
+        const mime = detectedType?.mime ?? "application/octet-stream";
         const decodedBlob = new Blob([decodedBytes], {
-          type: detectedType?.mime ?? "application/octet-stream",
+          type: mime,
         });
         setDecodedFile({
           url: URL.createObjectURL(decodedBlob),
           name: `decoded-file.${extension}`,
           size: decodedBlob.size,
+          mime,
+          isPdf: mime === "application/pdf" || extension === "pdf",
         });
         return;
       }
 
-      const decoded = fromBase64ToText(inputValue);
+      const decoded = new TextDecoder().decode(decodedBytes);
       setResultValue(decoded);
     } catch {
       clearDecodedFile();
@@ -205,6 +207,15 @@ export default function Base64Tool({ onToast }: Base64ToolProps) {
           />
         </div>
       )}
+      {decodedFile?.isPdf ? (
+        <div className={ui.textAreaFrame}>
+          <iframe
+            src={decodedFile.url}
+            title="Decoded PDF preview"
+            className="h-130 w-full border-0"
+          />
+        </div>
+      ) : null}
     </section>
   );
 }
