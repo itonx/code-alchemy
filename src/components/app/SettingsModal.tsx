@@ -58,6 +58,17 @@ export default function SettingsModal({
         </div>
         <div className="mt-3 flex justify-end">
           <a
+            href="https://github.com/itonx/code-alchemy"
+            target="_blank"
+            rel="noreferrer"
+            className={`${ui.button} ${ui.buttonPrimary} h-10 w-44 justify-center`}
+          >
+            <Icon icon="tabler:star" width="16" />
+            Star on GitHub
+          </a>
+        </div>
+        <div className="mt-3 flex justify-end">
+          <a
             href="https://buymeacoffee.com/itonx"
             target="_blank"
             rel="noreferrer"
