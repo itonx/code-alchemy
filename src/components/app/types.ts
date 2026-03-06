@@ -31,4 +31,5 @@ export type ToolItem = {
   key: ToolKey;
   label: string;
   icon: string;
+  description: string;
 };

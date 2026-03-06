@@ -4,11 +4,12 @@ import { APP_NAME, tools } from "./constants";
 import type { ToolKey } from "./types";
 
 type SidebarProps = {
-  activeTool: ToolKey;
+  activeTool: ToolKey | "landing";
   searchValue: string;
   isTyping: boolean;
   isCollapsed: boolean;
   onToolChange: (tool: ToolKey) => void;
+  onAppNameClick: () => void;
   onSearchChange: (value: string) => void;
   onOpenSettings: () => void;
   onCollapsedChange: (collapsed: boolean) => void;
@@ -25,6 +26,7 @@ export default function Sidebar({
   isTyping,
   isCollapsed,
   onToolChange,
+  onAppNameClick,
   onSearchChange,
   onOpenSettings,
   onCollapsedChange,
@@ -50,6 +52,11 @@ export default function Sidebar({
   );
 
   const updateIndicatorStyle = useCallback(() => {
+    if (activeTool === "landing") {
+      setIndicatorStyle(null);
+      return;
+    }
+
     const activeToolVisible = filteredTools.some(
       (tool) => tool.key === activeTool,
     );
@@ -209,9 +216,16 @@ export default function Sidebar({
             </div>
           )}
           {!isDesktopCollapsed ? (
-            <h1 className="m-0 bg-gradient-to-br from-[var(--accent)] to-[color-mix(in_srgb,var(--accent)_50%,var(--surface))] bg-clip-text font-[Cinzel] text-[1.24rem] font-bold tracking-wide text-transparent max-[920px]:hidden">
-              {APP_NAME}
-            </h1>
+            <button
+              type="button"
+              className="m-0 cursor-pointer border-0 bg-transparent p-0 text-left max-[920px]:hidden"
+              onClick={onAppNameClick}
+              title="Go to landing page"
+            >
+              <h1 className="m-0 bg-gradient-to-br from-[var(--accent)] to-[color-mix(in_srgb,var(--accent)_50%,var(--surface))] bg-clip-text font-[Cinzel] text-[1.24rem] font-bold tracking-wide text-transparent">
+                {APP_NAME}
+              </h1>
+            </button>
           ) : null}
 
           {!isDesktopCollapsed ? (

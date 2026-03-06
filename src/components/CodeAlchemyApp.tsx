@@ -1,5 +1,6 @@
 import { Icon } from "@iconify/react";
 import { Suspense, lazy, useEffect, useRef, useState } from "react";
+import LandingPage from "./app/LandingPage";
 import SettingsModal from "./app/SettingsModal";
 import Sidebar from "./app/Sidebar";
 import ToolSkeleton from "./app/ToolSkeleton";
@@ -44,10 +45,12 @@ const ImageCompressorTool = lazy(
   () => import("./app/tools/ImageCompressorTool"),
 );
 
+type AppView = ToolKey | "landing";
+
 export default function CodeAlchemyApp() {
   const [theme, setTheme] = useState<ThemeMode>("dark");
-  const [activeTool, setActiveTool] = useState<ToolKey>("guid");
-  const [displayedTool, setDisplayedTool] = useState<ToolKey>("guid");
+  const [activeTool, setActiveTool] = useState<AppView>("landing");
+  const [displayedTool, setDisplayedTool] = useState<AppView>("landing");
   const [isSwitchingTool, setIsSwitchingTool] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [searchValue, setSearchValue] = useState("");
@@ -125,7 +128,7 @@ export default function CodeAlchemyApp() {
     };
   }, [displayedTool, isSwitchingTool, isSidebarCollapsed]);
 
-  const handleToolChange = (tool: ToolKey) => {
+  const handleToolChange = (tool: AppView) => {
     if (tool === activeTool || tool === displayedTool) {
       return;
     }
@@ -155,6 +158,170 @@ export default function CodeAlchemyApp() {
     setToast({ id: Date.now(), text: "Copied to clipboard" });
   };
 
+  const renderView = () => {
+    if (displayedTool === "landing") {
+      return <LandingPage onToolChange={handleToolChange} />;
+    }
+
+    if (displayedTool === "guid") {
+      return <GuidTool onToast={showCopyToast} />;
+    }
+
+    if (displayedTool === "base64") {
+      return <Base64Tool onToast={showCopyToast} />;
+    }
+
+    if (displayedTool === "formatter") {
+      return (
+        <Suspense fallback={<ToolSkeleton />}>
+          <CodeFormatterTool theme={theme} onToast={showCopyToast} />
+        </Suspense>
+      );
+    }
+
+    if (displayedTool === "aes") {
+      return (
+        <Suspense fallback={<ToolSkeleton />}>
+          <AesTool onToast={showCopyToast} />
+        </Suspense>
+      );
+    }
+
+    if (displayedTool === "text-diff") {
+      return (
+        <Suspense fallback={<ToolSkeleton />}>
+          <TextDiffTool onToast={showCopyToast} />
+        </Suspense>
+      );
+    }
+
+    if (displayedTool === "color-picker") {
+      return (
+        <Suspense fallback={<ToolSkeleton />}>
+          <ColorPickerTool onToast={showCopyToast} />
+        </Suspense>
+      );
+    }
+
+    if (displayedTool === "number-base") {
+      return (
+        <Suspense fallback={<ToolSkeleton />}>
+          <NumberBaseConverterTool onToast={showCopyToast} />
+        </Suspense>
+      );
+    }
+
+    if (displayedTool === "timezone-converter") {
+      return (
+        <Suspense fallback={<ToolSkeleton />}>
+          <TimezoneConverterTool onToast={showCopyToast} />
+        </Suspense>
+      );
+    }
+
+    if (displayedTool === "hash") {
+      return (
+        <Suspense fallback={<ToolSkeleton />}>
+          <HashGeneratorTool onToast={showCopyToast} />
+        </Suspense>
+      );
+    }
+
+    if (displayedTool === "random-number") {
+      return (
+        <Suspense fallback={<ToolSkeleton />}>
+          <RandomNumberGeneratorTool onToast={showCopyToast} />
+        </Suspense>
+      );
+    }
+
+    if (displayedTool === "color-palette") {
+      return (
+        <Suspense fallback={<ToolSkeleton />}>
+          <ColorPaletteGeneratorTool onToast={showCopyToast} />
+        </Suspense>
+      );
+    }
+
+    if (displayedTool === "lorem-ipsum") {
+      return (
+        <Suspense fallback={<ToolSkeleton />}>
+          <LoremIpsumTool onToast={showCopyToast} />
+        </Suspense>
+      );
+    }
+
+    if (displayedTool === "url-encoder") {
+      return (
+        <Suspense fallback={<ToolSkeleton />}>
+          <UrlEncoderDecoderTool onToast={showCopyToast} />
+        </Suspense>
+      );
+    }
+
+    if (displayedTool === "jwt-decoder") {
+      return (
+        <Suspense fallback={<ToolSkeleton />}>
+          <JwtDecoderTool onToast={showCopyToast} />
+        </Suspense>
+      );
+    }
+
+    if (displayedTool === "http-status") {
+      return (
+        <Suspense fallback={<ToolSkeleton />}>
+          <HttpStatusReferenceTool />
+        </Suspense>
+      );
+    }
+
+    if (displayedTool === "markdown-editor") {
+      return (
+        <Suspense fallback={<ToolSkeleton />}>
+          <MarkdownEditorTool theme={theme} />
+        </Suspense>
+      );
+    }
+
+    if (displayedTool === "qr") {
+      return (
+        <Suspense fallback={<ToolSkeleton />}>
+          <QrGeneratorTool onToast={showCopyToast} />
+        </Suspense>
+      );
+    }
+
+    if (displayedTool === "minifier") {
+      return (
+        <Suspense fallback={<ToolSkeleton />}>
+          <MinifierTool theme={theme} onToast={showCopyToast} />
+        </Suspense>
+      );
+    }
+
+    if (displayedTool === "password") {
+      return (
+        <Suspense fallback={<ToolSkeleton />}>
+          <PasswordGeneratorTool onToast={showCopyToast} />
+        </Suspense>
+      );
+    }
+
+    if (displayedTool === "image-resizer") {
+      return (
+        <Suspense fallback={<ToolSkeleton />}>
+          <ImageResizerTool />
+        </Suspense>
+      );
+    }
+
+    return (
+      <Suspense fallback={<ToolSkeleton />}>
+        <ImageCompressorTool />
+      </Suspense>
+    );
+  };
+
   return (
     <main
       className={`${ui.shell} ${isSidebarCollapsed ? ui.shellCollapsed : ui.shellExpanded}`}
@@ -165,6 +332,7 @@ export default function CodeAlchemyApp() {
         isTyping={isTyping}
         isCollapsed={isSidebarCollapsed}
         onToolChange={handleToolChange}
+        onAppNameClick={() => handleToolChange("landing")}
         onSearchChange={(value) => {
           setSearchValue(value);
           setIsTyping(true);
@@ -181,107 +349,7 @@ export default function CodeAlchemyApp() {
           className={`${ui.contentSwitch} ${isSwitchingTool ? "" : "animate-[content-in_260ms_ease-out]"}`}
         >
           {isSwitchingTool ? <ToolSkeleton /> : null}
-          {!isSwitchingTool && displayedTool === "guid" ? (
-            <GuidTool onToast={showCopyToast} />
-          ) : null}
-          {!isSwitchingTool && displayedTool === "base64" ? (
-            <Base64Tool onToast={showCopyToast} />
-          ) : null}
-          {!isSwitchingTool && displayedTool === "formatter" ? (
-            <Suspense fallback={<ToolSkeleton />}>
-              <CodeFormatterTool theme={theme} onToast={showCopyToast} />
-            </Suspense>
-          ) : null}
-          {!isSwitchingTool && displayedTool === "aes" ? (
-            <Suspense fallback={<ToolSkeleton />}>
-              <AesTool onToast={showCopyToast} />
-            </Suspense>
-          ) : null}
-          {!isSwitchingTool && displayedTool === "text-diff" ? (
-            <Suspense fallback={<ToolSkeleton />}>
-              <TextDiffTool onToast={showCopyToast} />
-            </Suspense>
-          ) : null}
-          {!isSwitchingTool && displayedTool === "color-picker" ? (
-            <Suspense fallback={<ToolSkeleton />}>
-              <ColorPickerTool onToast={showCopyToast} />
-            </Suspense>
-          ) : null}
-          {!isSwitchingTool && displayedTool === "number-base" ? (
-            <Suspense fallback={<ToolSkeleton />}>
-              <NumberBaseConverterTool onToast={showCopyToast} />
-            </Suspense>
-          ) : null}
-          {!isSwitchingTool && displayedTool === "timezone-converter" ? (
-            <Suspense fallback={<ToolSkeleton />}>
-              <TimezoneConverterTool onToast={showCopyToast} />
-            </Suspense>
-          ) : null}
-          {!isSwitchingTool && displayedTool === "hash" ? (
-            <Suspense fallback={<ToolSkeleton />}>
-              <HashGeneratorTool onToast={showCopyToast} />
-            </Suspense>
-          ) : null}
-          {!isSwitchingTool && displayedTool === "random-number" ? (
-            <Suspense fallback={<ToolSkeleton />}>
-              <RandomNumberGeneratorTool onToast={showCopyToast} />
-            </Suspense>
-          ) : null}
-          {!isSwitchingTool && displayedTool === "color-palette" ? (
-            <Suspense fallback={<ToolSkeleton />}>
-              <ColorPaletteGeneratorTool onToast={showCopyToast} />
-            </Suspense>
-          ) : null}
-          {!isSwitchingTool && displayedTool === "lorem-ipsum" ? (
-            <Suspense fallback={<ToolSkeleton />}>
-              <LoremIpsumTool onToast={showCopyToast} />
-            </Suspense>
-          ) : null}
-          {!isSwitchingTool && displayedTool === "url-encoder" ? (
-            <Suspense fallback={<ToolSkeleton />}>
-              <UrlEncoderDecoderTool onToast={showCopyToast} />
-            </Suspense>
-          ) : null}
-          {!isSwitchingTool && displayedTool === "jwt-decoder" ? (
-            <Suspense fallback={<ToolSkeleton />}>
-              <JwtDecoderTool onToast={showCopyToast} />
-            </Suspense>
-          ) : null}
-          {!isSwitchingTool && displayedTool === "http-status" ? (
-            <Suspense fallback={<ToolSkeleton />}>
-              <HttpStatusReferenceTool />
-            </Suspense>
-          ) : null}
-          {!isSwitchingTool && displayedTool === "markdown-editor" ? (
-            <Suspense fallback={<ToolSkeleton />}>
-              <MarkdownEditorTool theme={theme} />
-            </Suspense>
-          ) : null}
-          {!isSwitchingTool && displayedTool === "qr" ? (
-            <Suspense fallback={<ToolSkeleton />}>
-              <QrGeneratorTool onToast={showCopyToast} />
-            </Suspense>
-          ) : null}
-          {!isSwitchingTool && displayedTool === "minifier" ? (
-            <Suspense fallback={<ToolSkeleton />}>
-              <MinifierTool theme={theme} onToast={showCopyToast} />
-            </Suspense>
-          ) : null}
-          {!isSwitchingTool && displayedTool === "password" ? (
-            <Suspense fallback={<ToolSkeleton />}>
-              <PasswordGeneratorTool onToast={showCopyToast} />
-            </Suspense>
-          ) : null}
-          {!isSwitchingTool && displayedTool === "image-resizer" ? (
-            <Suspense fallback={<ToolSkeleton />}>
-              <ImageResizerTool />
-            </Suspense>
-          ) : null}
-          {!isSwitchingTool && displayedTool === "image-compressor" ? (
-            <Suspense fallback={<ToolSkeleton />}>
-              <ImageCompressorTool />
-            </Suspense>
-          ) : null}
+          {!isSwitchingTool ? renderView() : null}
         </div>
       </section>
 
