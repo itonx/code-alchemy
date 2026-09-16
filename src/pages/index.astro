@@ -1,8 +1,221 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import CodeAlchemyApp from '../components/CodeAlchemyApp';
 ---
 
 <Layout>
-	<CodeAlchemyApp client:load />
+	<main class="redirect-page">
+		<section class="redirect-card" aria-labelledby="redirect-title">
+			<div class="alchemy-mark" aria-hidden="true">
+				<span></span>
+				<span></span>
+				<span></span>
+			</div>
+			<p class="eyebrow">Code Alchemy</p>
+			<h1 id="redirect-title">The newest version is ready.</h1>
+			<p class="message">
+				We're taking you to the latest Code Alchemy experience in
+				<strong><span id="countdown">5</span> seconds</strong>.
+			</p>
+			<div class="progress-track" aria-hidden="true">
+				<div class="progress-bar"></div>
+			</div>
+			<p class="destination">
+				Continuing to
+				<a href="https://itonx.dev/codealchemy">itonx.dev/codealchemy</a>
+			</p>
+			<p class="status" id="redirect-status" aria-live="polite">Preparing your tools...</p>
+		</section>
+	</main>
 </Layout>
+
+<script>
+	const destination = 'https://itonx.dev/codealchemy';
+	const countdown = document.querySelector('#countdown');
+	const status = document.querySelector('#redirect-status');
+	let seconds = 5;
+
+	const timer = window.setInterval(() => {
+		seconds -= 1;
+		if (countdown) countdown.textContent = String(seconds);
+
+		if (seconds <= 0) {
+			window.clearInterval(timer);
+			if (status) status.textContent = 'Opening the newest version...';
+			window.location.replace(destination);
+		}
+	}, 1000);
+</script>
+
+<style>
+	.redirect-page {
+		--redirect-ink: #163d50;
+		--redirect-muted: #6d8593;
+		--redirect-teal: #0ea5a4;
+		align-items: center;
+		background:
+			radial-gradient(circle at 15% 15%, rgba(14, 165, 164, 0.15), transparent 34%),
+			linear-gradient(135deg, #f8fcff 0%, #e9f4f5 100%);
+		display: flex;
+		justify-content: center;
+		min-height: 100vh;
+		padding: 2rem;
+		position: relative;
+		overflow: hidden;
+	}
+
+	.redirect-page::before,
+	.redirect-page::after {
+		border: 1px solid rgba(14, 165, 164, 0.18);
+		border-radius: 50%;
+		content: '';
+		position: absolute;
+	}
+
+	.redirect-page::before {
+		height: 28rem;
+		right: -10rem;
+		top: -12rem;
+		width: 28rem;
+	}
+
+	.redirect-page::after {
+		bottom: -16rem;
+		height: 32rem;
+		left: -14rem;
+		width: 32rem;
+	}
+
+	.redirect-card {
+		animation: redirect-in 700ms ease-out both;
+		background: rgba(255, 255, 255, 0.78);
+		border: 1px solid rgba(216, 228, 236, 0.9);
+		border-radius: 1.25rem;
+		box-shadow: 0 24px 70px rgba(22, 61, 80, 0.12);
+		max-width: 34rem;
+		padding: clamp(2rem, 6vw, 4rem);
+		position: relative;
+		text-align: center;
+		width: 100%;
+		z-index: 1;
+	}
+
+	.alchemy-mark {
+		align-items: flex-end;
+		display: flex;
+		gap: 0.28rem;
+		height: 2rem;
+		justify-content: center;
+		margin: 0 auto 1.5rem;
+	}
+
+	.alchemy-mark span {
+		animation: mark-pulse 1.8s ease-in-out infinite;
+		background: var(--redirect-teal);
+		border-radius: 999px;
+		display: block;
+		height: 1.1rem;
+		width: 0.35rem;
+	}
+
+	.alchemy-mark span:nth-child(2) {
+		animation-delay: 160ms;
+		height: 2rem;
+	}
+
+	.alchemy-mark span:nth-child(3) {
+		animation-delay: 320ms;
+		height: 1.5rem;
+	}
+
+	.eyebrow {
+		color: var(--redirect-teal);
+		font-size: 0.75rem;
+		font-weight: 600;
+		letter-spacing: 0.16em;
+		margin: 0 0 0.75rem;
+		text-transform: uppercase;
+	}
+
+	h1 {
+		color: var(--redirect-ink);
+		font-family: Cinzel, Georgia, serif;
+		font-size: clamp(1.8rem, 5vw, 2.45rem);
+		line-height: 1.15;
+		margin: 0;
+	}
+
+	.message {
+		color: var(--redirect-muted);
+		font-size: 1rem;
+		line-height: 1.7;
+		margin: 1.25rem auto 1.75rem;
+		max-width: 25rem;
+	}
+
+	.message strong {
+		color: var(--redirect-ink);
+		font-weight: 600;
+		white-space: nowrap;
+	}
+
+	.progress-track {
+		background: #dcebed;
+		border-radius: 999px;
+		height: 0.35rem;
+		overflow: hidden;
+	}
+
+	.progress-bar {
+		animation: progress 5s linear both;
+		background: linear-gradient(90deg, var(--redirect-teal), #24e4a7);
+		border-radius: inherit;
+		height: 100%;
+		transform-origin: left;
+	}
+
+	.destination {
+		color: var(--redirect-muted);
+		font-size: 0.8rem;
+		margin: 1.25rem 0 0;
+	}
+
+	.destination a {
+		color: var(--redirect-ink);
+		font-weight: 600;
+		text-decoration-color: rgba(14, 165, 164, 0.45);
+		text-underline-offset: 0.2em;
+	}
+
+	.status {
+		color: var(--redirect-teal);
+		font-size: 0.75rem;
+		margin: 0.7rem 0 0;
+	}
+
+	@keyframes redirect-in {
+		from { opacity: 0; transform: translateY(1rem); }
+		to { opacity: 1; transform: translateY(0); }
+	}
+
+	@keyframes mark-pulse {
+		0%, 100% { opacity: 0.5; transform: scaleY(0.8); }
+		50% { opacity: 1; transform: scaleY(1); }
+	}
+
+	@keyframes progress {
+		from { transform: scaleX(0); }
+		to { transform: scaleX(1); }
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.redirect-card,
+		.alchemy-mark span,
+		.progress-bar { animation: none; }
+		.progress-bar { transform: scaleX(1); }
+	}
+
+	@media (max-width: 480px) {
+		.redirect-page { padding: 1rem; }
+		.redirect-card { padding: 2.5rem 1.5rem; }
+	}
+</style>
