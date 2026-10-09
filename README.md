@@ -1,3 +1,3 @@
 # Code Alchemy
 
-Link: https://codealchemy.app
+Link: https://itonx.dev/codealchemy
